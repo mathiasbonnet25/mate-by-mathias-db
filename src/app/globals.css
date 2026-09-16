@@ -1,0 +1,223 @@
+@import "tailwindcss";
+
+/* --------------------------------------------------------------------------
+   Mate by Mathias — système de design
+   Trois couleurs seulement : blanc, noir, or. Le reste n'est que nuance.
+   Le mode sombre est piloté par l'attribut data-theme posé sur <html>, avec
+   repli sur la préférence système.
+   -------------------------------------------------------------------------- */
+
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+@theme {
+  --font-display: var(--font-cormorant), "Cormorant Garamond", Georgia, serif;
+  --font-sans: var(--font-inter), "Inter", system-ui, -apple-system, sans-serif;
+
+  /* Or de la marque : chaud, sourd, jamais criard. */
+  --color-gold-50: #fbf7ef;
+  --color-gold-100: #f5ecd9;
+  --color-gold-200: #e9d7ae;
+  --color-gold-300: #dbbd7c;
+  --color-gold-400: #cfa758;
+  --color-gold-500: #c2953f;
+  --color-gold-600: #a87b2f;
+  --color-gold-700: #875e28;
+  --color-gold-800: #6d4c27;
+  --color-gold-900: #5b4024;
+
+  /* Gris neutres légèrement chauds, pour ne pas jurer avec l'or. */
+  --color-ink-50: #f7f7f6;
+  --color-ink-100: #eeeeec;
+  --color-ink-200: #d9d9d5;
+  --color-ink-300: #b9b9b2;
+  --color-ink-400: #92928a;
+  --color-ink-500: #74746c;
+  --color-ink-600: #5c5c56;
+  --color-ink-700: #4a4a45;
+  --color-ink-800: #2e2e2b;
+  --color-ink-900: #1a1a18;
+  --color-ink-950: #0d0d0c;
+
+  --ease-premium: cubic-bezier(0.22, 1, 0.36, 1);
+
+  --spacing-section: 7rem;
+}
+
+:root {
+  --surface: #ffffff;
+  --surface-muted: #f7f7f6;
+  --surface-elevated: #ffffff;
+  --foreground: #1a1a18;
+  --foreground-muted: #5c5c56;
+  --border: #e6e6e2;
+  --accent: #a87b2f;
+  --accent-contrast: #ffffff;
+  --overlay: rgba(13, 13, 12, 0.55);
+
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  --surface: #0d0d0c;
+  --surface-muted: #141413;
+  --surface-elevated: #1a1a18;
+  --foreground: #f4f4f1;
+  --foreground-muted: #a8a8a0;
+  --border: #2a2a27;
+  --accent: #cfa758;
+  --accent-contrast: #0d0d0c;
+  --overlay: rgba(0, 0, 0, 0.7);
+
+  color-scheme: dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --surface: #0d0d0c;
+    --surface-muted: #141413;
+    --surface-elevated: #1a1a18;
+    --foreground: #f4f4f1;
+    --foreground-muted: #a8a8a0;
+    --border: #2a2a27;
+    --accent: #cfa758;
+    --accent-contrast: #0d0d0c;
+    --overlay: rgba(0, 0, 0, 0.7);
+
+    color-scheme: dark;
+  }
+}
+
+@theme inline {
+  --color-surface: var(--surface);
+  --color-surface-muted: var(--surface-muted);
+  --color-surface-elevated: var(--surface-elevated);
+  --color-foreground: var(--foreground);
+  --color-foreground-muted: var(--foreground-muted);
+  --color-line: var(--border);
+  --color-accent: var(--accent);
+  --color-accent-contrast: var(--accent-contrast);
+}
+
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--surface);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    font-weight: 300;
+    letter-spacing: -0.015em;
+  }
+
+  ::selection {
+    background-color: var(--accent);
+    color: var(--accent-contrast);
+  }
+
+  /* Anneau de focus visible : exigence d'accessibilité, y compris au clavier. */
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  /* Respect de la préférence « animations réduites ». */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer components {
+  /* Filet doré fin utilisé comme séparateur de sections. */
+  .rule-gold {
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      var(--accent) 35%,
+      var(--accent) 65%,
+      transparent
+    );
+    opacity: 0.55;
+  }
+
+  /* Surlignage progressif des liens du menu. */
+  .link-underline {
+    position: relative;
+  }
+  .link-underline::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -3px;
+    height: 1px;
+    width: 100%;
+    background-color: var(--accent);
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.45s var(--ease-premium);
+  }
+  .link-underline:hover::after,
+  .link-underline[data-active="true"]::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+
+  .eyebrow {
+    font-size: 0.6875rem;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--foreground-muted);
+  }
+}
+
+@layer utilities {
+  .container-page {
+    width: 100%;
+    margin-inline: auto;
+    max-width: 88rem;
+    padding-inline: 1.25rem;
+  }
+
+  @media (min-width: 768px) {
+    .container-page {
+      padding-inline: 2.5rem;
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .container-page {
+      padding-inline: 4rem;
+    }
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Masque le contenu jusqu'à ce qu'il entre dans le viewport : évite
+     un « flash » avant l'animation d'apparition. */
+  .reveal-hidden {
+    opacity: 0;
+  }
+}

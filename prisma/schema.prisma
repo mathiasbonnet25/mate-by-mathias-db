@@ -1,0 +1,957 @@
+// Mate by Mathias — modèle de données
+// Base : PostgreSQL. ORM : Prisma.
+// Les montants sont stockés en centimes (Int) pour éviter toute erreur de
+// virgule flottante sur les prix et les totaux de commande.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ---------------------------------------------------------------------------
+// Utilisateurs, authentification, rôles
+// ---------------------------------------------------------------------------
+
+enum Role {
+  CLIENT
+  GESTIONNAIRE
+  ADMIN
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  emailVerified DateTime?
+  name          String?
+  phone         String?
+  image         String?
+  // Hash argon2id/bcrypt — jamais le mot de passe en clair.
+  passwordHash  String?
+  role          Role      @default(CLIENT)
+
+  // Double authentification (TOTP)
+  twoFactorEnabled       Boolean @default(false)
+  twoFactorSecret        String? // chiffré au repos via lib/crypto
+  twoFactorRecoveryCodes String? // hashes des codes de secours, séparés par ,
+
+  // Anti-force brute
+  failedLoginAttempts Int       @default(0)
+  lockedUntil         DateTime?
+  lastLoginAt         DateTime?
+
+  // RGPD
+  acceptsMarketing Boolean   @default(false)
+  marketingOptInAt DateTime?
+  anonymizedAt     DateTime?
+
+  accounts     Account[]
+  sessions     Session[]
+  addresses    Address[]
+  orders       Order[]
+  quotes       Quote[]
+  favorites    Favorite[]
+  reviews      Review[]
+  auditLogs    AuditLog[]
+  dataRequests DataRequest[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([role])
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+enum AddressType {
+  SHIPPING
+  BILLING
+}
+
+model Address {
+  id         String      @id @default(cuid())
+  userId     String?
+  user       User?       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type       AddressType @default(SHIPPING)
+  firstName  String
+  lastName   String
+  company    String?
+  line1      String
+  line2      String?
+  postalCode String
+  city       String
+  country    String      @default("FR")
+  phone      String?
+  isDefault  Boolean     @default(false)
+
+  ordersShipping Order[] @relation("OrderShipping")
+  ordersBilling  Order[] @relation("OrderBilling")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
+// ---------------------------------------------------------------------------
+// Catalogue
+// ---------------------------------------------------------------------------
+
+/// Univers de la boutique : « Cadres & Vélos » ou « Vêtements & Accessoires ».
+enum Universe {
+  VELOS
+  EQUIPEMENT
+}
+
+model Category {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  name        String
+  description String?
+  universe    Universe
+  imageUrl    String?
+  /// Ordre d'affichage, réorganisable par glisser-déposer dans l'admin.
+  position    Int      @default(0)
+  isActive    Boolean  @default(true)
+
+  parentId String?
+  parent   Category?  @relation("CategoryTree", fields: [parentId], references: [id], onDelete: SetNull)
+  children Category[] @relation("CategoryTree")
+
+  products Product[]
+
+  seoTitle       String?
+  seoDescription String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([universe, position])
+  @@index([parentId])
+}
+
+model Brand {
+  id       String    @id @default(cuid())
+  slug     String    @unique
+  name     String
+  logoUrl  String?
+  products Product[]
+}
+
+enum ProductStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+model Product {
+  id          String        @id @default(cuid())
+  slug        String        @unique
+  name        String
+  /// Accroche courte affichée sur les cartes produit.
+  tagline     String?
+  description String        @db.Text
+  universe    Universe
+  status      ProductStatus @default(DRAFT)
+
+  categoryId String?
+  category   Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  brandId    String?
+  brand      Brand?    @relation(fields: [brandId], references: [id], onDelete: SetNull)
+
+  /// Prix de référence en centimes (la variante peut le surcharger).
+  basePriceCents      Int
+  /// Prix barré (promotion) en centimes.
+  compareAtPriceCents Int?
+  /// Taux de TVA applicable, en points de pourcentage (20 = 20 %).
+  vatRate             Int  @default(20)
+
+  isFeatured    Boolean @default(false)
+  /// Produit nettement personnalisé : pas de droit de rétractation (art. L221-28 C. conso.).
+  isMadeToOrder Boolean @default(false)
+
+  weightGrams Int?
+  /// Caractéristiques techniques : [{ label, value }]
+  specs       Json?
+
+  seoTitle       String?
+  seoDescription String?
+
+  variants   ProductVariant[]
+  options    ProductOption[]
+  images     ProductImage[]
+  videos     ProductVideo[]
+  reviews    Review[]
+  favorites  Favorite[]
+  orderItems OrderItem[]
+
+  publishedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([universe, status])
+  @@index([categoryId])
+  @@index([isFeatured])
+}
+
+/// Axe de variation (Couleur, Taille…). L'ordre définit l'affichage sur la fiche.
+model ProductOption {
+  id        String               @id @default(cuid())
+  productId String
+  product   Product              @relation(fields: [productId], references: [id], onDelete: Cascade)
+  name      String
+  position  Int                  @default(0)
+  values    ProductOptionValue[]
+
+  @@unique([productId, name])
+}
+
+model ProductOptionValue {
+  id       String        @id @default(cuid())
+  optionId String
+  option   ProductOption @relation(fields: [optionId], references: [id], onDelete: Cascade)
+  value    String
+  /// Pastille couleur (#RRGGBB) pour les axes de type Couleur.
+  hex      String?
+  position Int           @default(0)
+
+  variantValues VariantOptionValue[]
+
+  @@unique([optionId, value])
+}
+
+/// Une variante = une combinaison d'options, avec son propre prix, stock et photos.
+model ProductVariant {
+  id        String  @id @default(cuid())
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  sku   String @unique
+  /// Étiquette lisible, ex. « Noir mat / 56 ».
+  label String
+
+  /// Prix en centimes. Null = on retombe sur Product.basePriceCents.
+  priceCents          Int?
+  compareAtPriceCents Int?
+
+  stock          Int     @default(0)
+  /// Autorise la vente en rupture (précommande).
+  allowBackorder Boolean @default(false)
+  weightGrams    Int?
+
+  /// Couleur principale de la variante : sert à regrouper les photos.
+  colorName String?
+  colorHex  String?
+  /// Taille de la variante (vêtements, cadres).
+  sizeName  String?
+
+  isActive Boolean @default(true)
+  position Int     @default(0)
+
+  optionValues VariantOptionValue[]
+  images       ProductImage[]
+  orderItems   OrderItem[]
+  cartItems    CartItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([productId, isActive])
+}
+
+model VariantOptionValue {
+  variantId     String
+  variant       ProductVariant     @relation(fields: [variantId], references: [id], onDelete: Cascade)
+  optionValueId String
+  optionValue   ProductOptionValue @relation(fields: [optionValueId], references: [id], onDelete: Cascade)
+
+  @@id([variantId, optionValueId])
+}
+
+model ProductImage {
+  id        String          @id @default(cuid())
+  productId String
+  product   Product         @relation(fields: [productId], references: [id], onDelete: Cascade)
+  /// Si renseigné, l'image n'apparaît que pour cette variante (changement de couleur).
+  variantId String?
+  variant   ProductVariant? @relation(fields: [variantId], references: [id], onDelete: Cascade)
+
+  url      String
+  /// Texte alternatif : accessibilité et référencement.
+  alt      String
+  width    Int?
+  height   Int?
+  /// Placeholder base64 pour le chargement progressif.
+  blurData String?
+  position Int     @default(0)
+  /// Vue à 360° : image d'une séquence de rotation.
+  isSpin   Boolean @default(false)
+
+  @@index([productId, variantId, position])
+}
+
+model ProductVideo {
+  id        String  @id @default(cuid())
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  url       String
+  posterUrl String?
+  title     String?
+  position  Int     @default(0)
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  productId String?
+  product   Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  authorName         String
+  rating             Int
+  title              String?
+  body               String    @db.Text
+  /// Modération : un avis n'est public qu'après publication.
+  isPublished        Boolean   @default(false)
+  /// Traçabilité exigée pour l'affichage des avis en ligne (art. L111-7-2 C. conso.).
+  isVerifiedPurchase Boolean   @default(false)
+  collectedAt        DateTime  @default(now())
+  publishedAt        DateTime?
+
+  createdAt DateTime @default(now())
+
+  @@index([productId, isPublished])
+}
+
+model Favorite {
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@id([userId, productId])
+}
+
+// ---------------------------------------------------------------------------
+// Panier et commandes
+// ---------------------------------------------------------------------------
+
+model Cart {
+  id     String  @id @default(cuid())
+  /// Identifiant anonyme stocké dans un cookie strictement nécessaire.
+  token  String  @unique
+  userId String?
+  email  String?
+
+  discountCode String?
+  items        CartItem[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  expiresAt DateTime?
+
+  @@index([userId])
+}
+
+model CartItem {
+  id             String         @id @default(cuid())
+  cartId         String
+  cart           Cart           @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  variantId      String
+  variant        ProductVariant @relation(fields: [variantId], references: [id], onDelete: Cascade)
+  quantity       Int            @default(1)
+  /// Prix figé à l'ajout, recontrôlé côté serveur avant paiement.
+  unitPriceCents Int
+
+  createdAt DateTime @default(now())
+
+  @@unique([cartId, variantId])
+}
+
+enum OrderStatus {
+  PENDING_PAYMENT
+  PAID
+  IN_PRODUCTION
+  PAINTING
+  PACKING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+  REFUNDED
+}
+
+enum PaymentProvider {
+  STRIPE
+  PAYPAL
+  BANK_TRANSFER
+}
+
+enum PaymentStatus {
+  PENDING
+  AUTHORIZED
+  PAID
+  FAILED
+  REFUNDED
+  PARTIALLY_REFUNDED
+}
+
+model Order {
+  id     String @id @default(cuid())
+  /// Numéro lisible et séquentiel, ex. MBM-2026-00042.
+  number String @unique
+
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+  email  String
+  phone  String?
+
+  status        OrderStatus   @default(PENDING_PAYMENT)
+  paymentStatus PaymentStatus @default(PENDING)
+
+  shippingAddressId String?
+  shippingAddress   Address? @relation("OrderShipping", fields: [shippingAddressId], references: [id], onDelete: SetNull)
+  billingAddressId  String?
+  billingAddress    Address? @relation("OrderBilling", fields: [billingAddressId], references: [id], onDelete: SetNull)
+
+  subtotalCents Int
+  discountCents Int    @default(0)
+  shippingCents Int    @default(0)
+  vatCents      Int    @default(0)
+  totalCents    Int
+  currency      String @default("EUR")
+
+  discountCode String?
+
+  carrier        String?
+  trackingNumber String?
+  trackingUrl    String?
+  shippedAt      DateTime?
+  deliveredAt    DateTime?
+
+  /// Le client a renoncé au droit de rétractation pour une prestation
+  /// exécutée avant la fin du délai (art. L221-25 C. conso.).
+  withdrawalWaived      Boolean   @default(false)
+  withdrawalRequestedAt DateTime?
+
+  customerNote String? @db.Text
+  internalNote String? @db.Text
+
+  /// Jeton du panier d'origine : permet de vider précisément ce panier
+  /// après paiement, sans toucher à ceux des autres visiteurs.
+  cartToken String?
+
+  items    OrderItem[]
+  payments Payment[]
+  invoices Invoice[]
+  events   OrderEvent[]
+  quote    Quote?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+  @@index([userId])
+  @@index([createdAt])
+}
+
+model OrderItem {
+  id        String          @id @default(cuid())
+  orderId   String
+  order     Order           @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId String?
+  product   Product?        @relation(fields: [productId], references: [id], onDelete: SetNull)
+  variantId String?
+  variant   ProductVariant? @relation(fields: [variantId], references: [id], onDelete: SetNull)
+
+  /// Libellés recopiés : la facture doit rester fidèle même si le produit change.
+  name         String
+  variantLabel String?
+  sku          String?
+  imageUrl     String?
+
+  quantity       Int
+  unitPriceCents Int
+  vatRate        Int @default(20)
+  totalCents     Int
+
+  /// Détail de la configuration atelier, le cas échéant.
+  customization Json?
+
+  @@index([orderId])
+}
+
+model OrderEvent {
+  id        String      @id @default(cuid())
+  orderId   String
+  order     Order       @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  status    OrderStatus
+  message   String?
+  /// Visible par le client dans son espace « suivi ».
+  isPublic  Boolean     @default(true)
+  createdAt DateTime    @default(now())
+  createdBy String?
+
+  @@index([orderId, createdAt])
+}
+
+model Payment {
+  id            String          @id @default(cuid())
+  orderId       String
+  order         Order           @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  provider      PaymentProvider
+  status        PaymentStatus   @default(PENDING)
+  /// Référence côté prestataire (PaymentIntent Stripe, ordre PayPal…).
+  /// Aucun numéro de carte n'est stocké : le site ne voit jamais le PAN.
+  providerRef   String?
+  amountCents   Int
+  currency      String          @default("EUR")
+  /// Empreinte non identifiante renvoyée par le prestataire (4 derniers chiffres).
+  cardLast4     String?
+  cardBrand     String?
+  refundedCents Int             @default(0)
+  rawPayload    Json?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([orderId])
+  @@index([providerRef])
+}
+
+model Invoice {
+  id         String   @id @default(cuid())
+  /// Numérotation chronologique continue, sans rupture (art. 242 nonies A ann. II CGI).
+  number     String   @unique
+  orderId    String
+  order      Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  pdfUrl     String?
+  totalCents Int
+  vatCents   Int
+  issuedAt   DateTime @default(now())
+
+  @@index([orderId])
+}
+
+model DiscountCode {
+  id               String    @id @default(cuid())
+  code             String    @unique
+  /// PERCENT ou FIXED
+  type             String    @default("PERCENT")
+  value            Int
+  minSubtotalCents Int?
+  maxRedemptions   Int?
+  redemptions      Int       @default(0)
+  isActive         Boolean   @default(true)
+  startsAt         DateTime?
+  endsAt           DateTime?
+
+  createdAt DateTime @default(now())
+}
+
+model ShippingRate {
+  id               String  @id @default(cuid())
+  name             String
+  /// Zone : FR, EU, WORLD
+  zone             String  @default("FR")
+  priceCents       Int
+  /// Franco de port au-delà de ce montant (null = pas de franchise).
+  freeAboveCents   Int?
+  minWeightGrams   Int?
+  maxWeightGrams   Int?
+  deliveryEstimate String?
+  isActive         Boolean @default(true)
+  position         Int     @default(0)
+}
+
+// ---------------------------------------------------------------------------
+// Atelier personnalisation — devis
+// ---------------------------------------------------------------------------
+
+enum QuoteStatus {
+  NEW
+  IN_REVIEW
+  SENT
+  ACCEPTED
+  DECLINED
+  EXPIRED
+  CONVERTED
+}
+
+model Quote {
+  id     String      @id @default(cuid())
+  number String      @unique
+  status QuoteStatus @default(NEW)
+
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  firstName String
+  lastName  String
+  email     String
+  phone     String?
+
+  /// Configuration complète issue de l'atelier (support, peinture, finition, options).
+  configuration Json
+  /// Estimation affichée au client au moment de la demande. Ne vaut pas devis.
+  estimateCents Int
+  /// Montant du devis réellement établi par l'atelier.
+  quotedCents   Int?
+  message       String? @db.Text
+  attachments   Json?
+
+  internalNote String?   @db.Text
+  validUntil   DateTime?
+  pdfUrl       String?
+  sentAt       DateTime?
+  respondedAt  DateTime?
+
+  orderId String? @unique
+  order   Order?  @relation(fields: [orderId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status, createdAt])
+}
+
+/// Barème de l'estimateur, entièrement pilotable depuis l'administration.
+model CustomizationOption {
+  id              String  @id @default(cuid())
+  /// SUPPORT | PAINT | FINISH | EXTRA
+  step            String
+  slug            String
+  label           String
+  description     String?
+  imageUrl        String?
+  /// Prix fixe ajouté, en centimes.
+  priceCents      Int     @default(0)
+  /// Multiplicateur appliqué au sous-total (en millièmes : 1200 = ×1,2).
+  priceMultiplier Int     @default(1000)
+  /// Autorise plusieurs sélections simultanées (étape « options »).
+  isMultiple      Boolean @default(false)
+  position        Int     @default(0)
+  isActive        Boolean @default(true)
+
+  @@unique([step, slug])
+  @@index([step, position])
+}
+
+// ---------------------------------------------------------------------------
+// Contenu éditorial et médias
+// ---------------------------------------------------------------------------
+
+model Page {
+  id          String  @id @default(cuid())
+  slug        String  @unique
+  title       String
+  /// Contenu structuré en blocs, édité depuis l'administration.
+  content     Json
+  /// Page juridique : affichée dans le pied de page.
+  isLegal     Boolean @default(false)
+  isPublished Boolean @default(true)
+
+  seoTitle       String?
+  seoDescription String?
+  ogImageUrl     String?
+
+  /// Version brouillon prévisualisable avant publication.
+  draftContent Json?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+/// Texte, image ou réglage modifiable sans toucher au code.
+model ContentBlock {
+  id         String @id @default(cuid())
+  /// Emplacement, ex. « home.hero ».
+  key        String @unique
+  group      String @default("general")
+  label      String
+  /// TEXT | RICHTEXT | IMAGE | VIDEO | URL | JSON | BOOLEAN | NUMBER
+  type       String @default("TEXT")
+  value      Json
+  draftValue Json?
+  position   Int    @default(0)
+
+  updatedAt DateTime @updatedAt
+  updatedBy String?
+
+  @@index([group, position])
+}
+
+model MediaAsset {
+  id              String  @id @default(cuid())
+  url             String
+  /// Déclinaison WebP/AVIF générée à l'import.
+  webpUrl         String?
+  thumbUrl        String?
+  mimeType        String
+  fileName        String
+  /// Taille en octets après compression.
+  sizeBytes       Int
+  width           Int?
+  height          Int?
+  durationSeconds Int?
+  alt             String?
+  folder          String  @default("/")
+  checksum        String?
+
+  createdAt  DateTime @default(now())
+  uploadedBy String?
+
+  @@index([folder])
+  @@index([checksum])
+}
+
+model FaqItem {
+  id          String  @id @default(cuid())
+  question    String
+  answer      String  @db.Text
+  category    String  @default("general")
+  position    Int     @default(0)
+  isPublished Boolean @default(true)
+}
+
+model MenuItem {
+  id       String  @id @default(cuid())
+  /// HEADER | FOOTER_LEGAL | FOOTER_SHOP
+  location String
+  label    String
+  href     String
+  position Int     @default(0)
+  parentId String?
+  isActive Boolean @default(true)
+
+  @@index([location, position])
+}
+
+model InstagramPost {
+  id        String  @id @default(cuid())
+  imageUrl  String
+  permalink String
+  caption   String?
+  position  Int     @default(0)
+  isActive  Boolean @default(true)
+}
+
+model NewsletterSubscriber {
+  id               String    @id @default(cuid())
+  email            String    @unique
+  /// Double opt-in : l'inscription n'est active qu'après confirmation.
+  isConfirmed      Boolean   @default(false)
+  confirmToken     String?   @unique
+  confirmedAt      DateTime?
+  unsubscribedAt   DateTime?
+  /// Preuve de consentement conservée conformément au RGPD.
+  consentIpHash    String?
+  consentUserAgent String?
+  source           String?
+
+  createdAt DateTime @default(now())
+}
+
+model ContactMessage {
+  id          String   @id @default(cuid())
+  name        String
+  email       String
+  subject     String
+  message     String   @db.Text
+  /// NEW | IN_PROGRESS | CLOSED
+  status      String   @default("NEW")
+  isComplaint Boolean  @default(false)
+  createdAt   DateTime @default(now())
+}
+
+// ---------------------------------------------------------------------------
+// Conformité RGPD, cookies, sécurité
+// ---------------------------------------------------------------------------
+
+/// Catégories de traceurs pilotées depuis l'administration.
+model CookieCategory {
+  id          String  @id @default(cuid())
+  slug        String  @unique
+  name        String
+  description String  @db.Text
+  /// Les cookies strictement nécessaires ne sont pas soumis au consentement.
+  isEssential Boolean @default(false)
+  position    Int     @default(0)
+  isActive    Boolean @default(true)
+
+  trackers CookieTracker[]
+}
+
+model CookieTracker {
+  id               String         @id @default(cuid())
+  categoryId       String
+  category         CookieCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  name             String
+  vendor           String
+  purpose          String         @db.Text
+  /// Durée de conservation annoncée à l'utilisateur.
+  retention        String?
+  /// Pays du destinataire si transfert hors UE.
+  recipientCountry String?
+  /// Coupe-circuit : permet de désactiver immédiatement un traceur non conforme.
+  isActive         Boolean        @default(true)
+
+  @@index([categoryId])
+}
+
+/// Preuve de consentement : conservée sans identifier directement la personne.
+model ConsentRecord {
+  id            String    @id @default(cuid())
+  /// Identifiant de consentement stocké dans le cookie de préférences.
+  consentId     String
+  /// Hash salé de l'IP : preuve sans conservation d'une donnée identifiante brute.
+  ipHash        String?
+  userAgent     String?
+  /// { necessary: true, analytics: false, marketing: false, ... }
+  choices       Json
+  /// Version de la politique cookies acceptée.
+  policyVersion String
+  /// BANNER | PREFERENCES | WITHDRAWAL
+  origin        String    @default("BANNER")
+  createdAt     DateTime  @default(now())
+  expiresAt     DateTime?
+
+  @@index([consentId, createdAt])
+}
+
+enum DataRequestType {
+  ACCESS
+  RECTIFICATION
+  ERASURE
+  PORTABILITY
+  OBJECTION
+  RESTRICTION
+}
+
+enum DataRequestStatus {
+  RECEIVED
+  IDENTITY_PENDING
+  IN_PROGRESS
+  COMPLETED
+  REJECTED
+}
+
+/// Demande d'exercice des droits RGPD, suivie depuis l'administration.
+model DataRequest {
+  id           String            @id @default(cuid())
+  type         DataRequestType
+  status       DataRequestStatus @default(RECEIVED)
+  email        String
+  userId       String?
+  user         User?             @relation(fields: [userId], references: [id], onDelete: SetNull)
+  message      String?           @db.Text
+  internalNote String?           @db.Text
+  /// Délai légal de réponse : un mois à compter de la réception.
+  dueAt        DateTime
+  resolvedAt   DateTime?
+  resolution   String?           @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status, dueAt])
+}
+
+/// Journal des actions sensibles de l'administration.
+model AuditLog {
+  id         String  @id @default(cuid())
+  userId     String?
+  user       User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+  actorEmail String?
+  /// ex. product.update, order.refund, user.role_change
+  action     String
+  entity     String?
+  entityId   String?
+  /// Avant/après, sans donnée sensible.
+  diff       Json?
+  ipHash     String?
+  userAgent  String?
+  /// INFO | WARNING | CRITICAL
+  severity   String  @default("INFO")
+
+  createdAt DateTime @default(now())
+
+  @@index([action, createdAt])
+  @@index([userId])
+  @@index([severity, createdAt])
+}
+
+/// Compteur de tentatives par identifiant (email, IP hachée) pour le throttling.
+model RateLimitCounter {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  count     Int      @default(0)
+  expiresAt DateTime
+
+  @@index([expiresAt])
+}
+
+// ---------------------------------------------------------------------------
+// Statistiques d'audience (mesure interne, sans cookie tiers)
+// ---------------------------------------------------------------------------
+
+/// Vue de page agrégée : aucune donnée directement identifiante n'est stockée.
+model PageView {
+  id          String   @id @default(cuid())
+  path        String
+  referrer    String?
+  /// Hash journalier salé : permet de compter les visiteurs uniques du jour
+  /// sans conserver d'identifiant persistant.
+  visitorHash String
+  /// desktop | tablet | mobile
+  device      String?
+  country     String?
+  createdAt   DateTime @default(now())
+
+  @@index([path, createdAt])
+  @@index([visitorHash, createdAt])
+}
+
+/// Réglages globaux (coordonnées, réseaux, versions de politiques…).
+model SiteSetting {
+  key       String   @id
+  value     Json
+  updatedAt DateTime @updatedAt
+  updatedBy String?
+}
