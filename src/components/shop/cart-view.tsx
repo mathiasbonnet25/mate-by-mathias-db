@@ -16,6 +16,16 @@ import type { CartView as CartViewData } from "@/lib/cart";
 import { useRouter } from "next/navigation";
 
 /**
+ * Vrai lorsque la quantité demandée atteint le stock disponible. Le serveur
+ * plafonne de toute façon la ligne ; l'indiquer ici évite un bouton qui
+ * semble ne rien faire.
+ */
+function atMaxStock(item: { quantity: number; stock: number; allowBackorder: boolean }) {
+  if (item.allowBackorder) return item.quantity >= 20;
+  return item.quantity >= Math.min(item.stock, 20);
+}
+
+/**
  * Panier. Chaque modification passe par une action serveur qui revalide les
  * quantités et recalcule les totaux : le navigateur n'écrit jamais un prix.
  */
@@ -135,18 +145,29 @@ export function CartView({ cart }: { cart: CartViewData }) {
                       </span>
                       <button
                         type="button"
-                        disabled={pending}
+                        disabled={pending || atMaxStock(item)}
                         onClick={() =>
                           mutate(() =>
                             updateCartItemAction(item.id, item.quantity + 1),
                           )
                         }
                         aria-label={`Augmenter la quantité de ${item.productName}`}
-                        className="grid h-10 w-10 place-items-center transition-colors hover:text-accent disabled:opacity-40"
+                        title={
+                          atMaxStock(item)
+                            ? "Quantité maximale disponible atteinte"
+                            : undefined
+                        }
+                        className="grid h-10 w-10 place-items-center transition-colors hover:text-accent disabled:cursor-not-allowed disabled:opacity-40"
                       >
                         <Plus className="h-3 w-3" aria-hidden />
                       </button>
                     </div>
+
+                    {atMaxStock(item) && (
+                      <p className="text-[11px] text-foreground-muted">
+                        Quantité maximale disponible
+                      </p>
+                    )}
 
                     <button
                       type="button"

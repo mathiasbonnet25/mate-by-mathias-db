@@ -3,12 +3,7 @@ import { Inter, Cormorant_Garamond } from "next/font/google";
 
 import "./globals.css";
 
-import { Header } from "@/components/layout/header";
-import { Footer } from "@/components/layout/footer";
-import { CartProvider } from "@/components/shop/cart-provider";
-import { CookieConsentProvider } from "@/components/legal/cookie-consent";
 import { themeInitScript } from "@/components/ui/theme-toggle";
-import { getCartView } from "@/lib/cart";
 import { siteUrl } from "@/lib/env";
 import { BRAND, TAGLINE, jsonLdScript, organizationJsonLd } from "@/lib/seo";
 
@@ -53,15 +48,22 @@ export const viewport: Viewport = {
   ],
 };
 
-export default async function RootLayout({
+/**
+ * Enveloppe minimale commune au site public et à l'administration :
+ * polices, thème et données structurées. Chaque univers apporte ensuite
+ * son propre habillage.
+ */
+export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const cart = await getCartView();
-
   return (
-    <html lang="fr" suppressHydrationWarning className={`${inter.variable} ${cormorant.variable}`}>
+    <html
+      lang="fr"
+      suppressHydrationWarning
+      className={`${inter.variable} ${cormorant.variable}`}
+    >
       <head>
         {/* Applique le thème avant la première peinture pour éviter un flash. */}
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
@@ -72,22 +74,7 @@ export default async function RootLayout({
           }}
         />
       </head>
-      <body className="min-h-screen antialiased">
-        <a
-          href="#contenu"
-          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:bg-accent focus:px-4 focus:py-2 focus:text-accent-contrast"
-        >
-          Aller au contenu principal
-        </a>
-
-        <CookieConsentProvider>
-          <CartProvider initialCount={cart.count}>
-            <Header />
-            <main id="contenu">{children}</main>
-            <Footer />
-          </CartProvider>
-        </CookieConsentProvider>
-      </body>
+      <body className="min-h-screen antialiased">{children}</body>
     </html>
   );
 }

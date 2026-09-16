@@ -5,7 +5,7 @@ import { AdminHeader, Card, Stat, EmptyState } from "@/components/admin/ui";
 import { SalesChart } from "@/components/admin/sales-chart";
 import { getDashboardData } from "@/lib/analytics";
 import { prisma } from "@/lib/prisma";
-import { ORDER_STATUS_LABELS, PRODUCTION_COLUMNS } from "@/lib/orders";
+import { ORDER_STATUS_LABELS, PRODUCTION_COLUMNS } from "@/lib/order-status";
 import { formatDate, formatPrice } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";

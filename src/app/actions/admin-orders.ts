@@ -8,7 +8,7 @@ import { prisma } from "@/lib/prisma";
 import { requireStaff } from "@/lib/auth";
 import { logAudit } from "@/lib/audit";
 import { nextSequenceNumber } from "@/lib/numbering";
-import { ORDER_STATUS_LABELS } from "@/lib/orders";
+import { ORDER_STATUS_LABELS } from "@/lib/order-status";
 
 export type AdminResult = { ok: boolean; error?: string; id?: string };
 

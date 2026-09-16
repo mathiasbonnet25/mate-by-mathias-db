@@ -5,6 +5,11 @@ import { prisma } from "@/lib/prisma";
 import { computeTotals, type CartLine } from "@/lib/pricing";
 import { nextSequenceNumber } from "@/lib/numbering";
 
+export {
+  ORDER_STATUS_LABELS,
+  PRODUCTION_COLUMNS,
+} from "@/lib/order-status";
+
 export type CheckoutAddress = {
   firstName: string;
   lastName: string;
@@ -226,26 +231,3 @@ export async function markOrderPaid(params: {
     return updated;
   });
 }
-
-/** Libellés français des statuts, partagés par l'admin et l'espace client. */
-export const ORDER_STATUS_LABELS: Record<OrderStatus, string> = {
-  PENDING_PAYMENT: "En attente de paiement",
-  PAID: "Payée",
-  IN_PRODUCTION: "En préparation",
-  PAINTING: "En peinture",
-  PACKING: "Emballage",
-  SHIPPED: "Expédiée",
-  DELIVERED: "Livrée",
-  CANCELLED: "Annulée",
-  REFUNDED: "Remboursée",
-};
-
-/** Colonnes du planning de production affiché sur le tableau de bord. */
-export const PRODUCTION_COLUMNS: OrderStatus[] = [
-  "PAID",
-  "IN_PRODUCTION",
-  "PAINTING",
-  "PACKING",
-  "SHIPPED",
-  "DELIVERED",
-];

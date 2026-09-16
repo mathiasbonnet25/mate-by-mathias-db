@@ -3,7 +3,7 @@ import type { OrderStatus, Prisma } from "@prisma/client";
 
 import { AdminHeader, Card, EmptyState, Badge } from "@/components/admin/ui";
 import { prisma } from "@/lib/prisma";
-import { ORDER_STATUS_LABELS } from "@/lib/orders";
+import { ORDER_STATUS_LABELS } from "@/lib/order-status";
 import { formatDate, formatPrice } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";

@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { formatDateTime, formatPrice } from "@/lib/utils";
-import { ORDER_STATUS_LABELS } from "@/lib/orders";
+import { ORDER_STATUS_LABELS } from "@/lib/order-status";
 import { buildMetadata } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";

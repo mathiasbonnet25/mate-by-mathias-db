@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { Universe } from "@prisma/client";
 
-import { Filters } from "@/components/shop/filters";
+import { FilterSidebar, FilterToolbar } from "@/components/shop/filters";
 import { ProductCard } from "@/components/shop/product-card";
 import { RevealGroup } from "@/components/ui/reveal";
 import { getFilterFacets, listProducts } from "@/lib/catalog";
@@ -71,16 +71,14 @@ export async function CatalogView({
 
   return (
     <div className="container-page pb-28">
-      <div className="grid gap-x-14 lg:grid-cols-[260px_1fr]">
-        <div className="lg:col-span-2">
-          <Filters facets={facets} total={result.total} />
-        </div>
+      {/* Barre d'outils au-dessus, puis panneau de filtres à gauche et
+          produits à droite. */}
+      <FilterToolbar facets={facets} total={result.total} />
 
-        <div className="hidden lg:block">
-          {/* Le panneau de filtres est rendu par <Filters> sur grand écran. */}
-        </div>
+      <div className="grid gap-x-14 lg:grid-cols-[250px_1fr]">
+        <FilterSidebar facets={facets} />
 
-        <div className="lg:col-start-2 lg:row-start-2">
+        <div>
           {result.products.length === 0 ? (
             <div className="border border-line py-28 text-center">
               <p className="font-display text-2xl">Aucun produit ne correspond</p>

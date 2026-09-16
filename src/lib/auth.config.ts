@@ -1,4 +1,5 @@
 import type { NextAuthConfig } from "next-auth";
+import type { Role } from "@prisma/client";
 
 /**
  * Configuration compatible « edge » : elle ne doit importer ni Prisma ni
@@ -32,6 +33,29 @@ export const authConfig = {
   },
   providers: [],
   callbacks: {
+    /**
+     * Le middleware s'exécute sur le runtime edge, sans accès à la base :
+     * il ne dispose que du jeton. Ces deux rappels recopient le rôle du
+     * jeton vers la session pour que le contrôle d'accès fonctionne aussi
+     * bien côté edge que côté serveur. Sans eux, `auth.user.role` y serait
+     * toujours indéfini et l'administration deviendrait inaccessible.
+     */
+    jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+        token.role = user.role;
+        token.twoFactorEnabled = user.twoFactorEnabled;
+      }
+      return token;
+    },
+    session({ session, token }) {
+      if (session.user) {
+        session.user.id = token.id as string;
+        session.user.role = token.role as Role;
+        session.user.twoFactorEnabled = Boolean(token.twoFactorEnabled);
+      }
+      return session;
+    },
     authorized({ auth, request }) {
       const role = auth?.user?.role;
       const path = request.nextUrl.pathname;

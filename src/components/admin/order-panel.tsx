@@ -9,7 +9,7 @@ import {
   updateOrderShipping,
   updateOrderStatus,
 } from "@/app/actions/admin-orders";
-import { ORDER_STATUS_LABELS } from "@/lib/orders";
+import { ORDER_STATUS_LABELS } from "@/lib/order-status";
 
 type OrderStatusKey = keyof typeof ORDER_STATUS_LABELS;
 

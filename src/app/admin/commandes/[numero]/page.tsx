@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { AdminHeader, Card, Badge } from "@/components/admin/ui";
 import { OrderPanel } from "@/components/admin/order-panel";
 import { prisma } from "@/lib/prisma";
-import { ORDER_STATUS_LABELS } from "@/lib/orders";
+import { ORDER_STATUS_LABELS } from "@/lib/order-status";
 import { formatDateTime, formatPrice } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";

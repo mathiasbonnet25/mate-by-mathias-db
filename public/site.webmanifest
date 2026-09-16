@@ -1,0 +1,13 @@
+{
+  "name": "Mate by Mathias",
+  "short_name": "Mate",
+  "description": "Atelier de peinture et de restauration de vélos sur mesure.",
+  "lang": "fr",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0d0d0c",
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}

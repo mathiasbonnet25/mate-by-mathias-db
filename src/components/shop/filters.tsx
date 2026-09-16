@@ -24,15 +24,18 @@ const SORTS = [
 ];
 
 /**
- * Filtres du catalogue. L'état vit dans l'URL : un filtrage est donc
- * partageable, indexable et restauré par le bouton « précédent ».
+ * Filtres du catalogue.
+ *
+ * L'état vit dans l'URL : un filtrage est donc partageable, indexable et
+ * restauré par le bouton « précédent ». Le composant est scindé en deux
+ * parties pour que chacune trouve sa place dans la grille : le panneau dans
+ * la colonne de gauche, la barre d'outils au-dessus des produits.
  */
-export function Filters({ facets, total }: { facets: Facets; total: number }) {
+function useFilterState() {
   const router = useRouter();
   const pathname = usePathname();
   const params = useSearchParams();
   const [pending, startTransition] = useTransition();
-  const [drawerOpen, setDrawerOpen] = useState(false);
 
   const selected = useCallback(
     (key: string) => params.get(key)?.split(",").filter(Boolean) ?? [],
@@ -81,7 +84,15 @@ export function Filters({ facets, total }: { facets: Facets; total: number }) {
     (params.get("prixMax") ? 1 : 0) +
     (params.get("dispo") ? 1 : 0);
 
-  const panel = (
+  return { params, pending, selected, toggle, setSingle, update, activeCount };
+}
+
+/** Panneau de filtres, affiché en colonne sur grand écran. */
+function FilterPanel({ facets }: { facets: Facets }) {
+  const { params, selected, toggle, setSingle, update, activeCount } =
+    useFilterState();
+
+  return (
     <div className="space-y-10">
       {facets.categories.length > 0 && (
         <FilterGroup title="Type">
@@ -209,10 +220,24 @@ export function Filters({ facets, total }: { facets: Facets; total: number }) {
       )}
     </div>
   );
+}
+
+/**
+ * Barre d'outils : compteur, tri et, sur petit écran, le tiroir contenant
+ * le même panneau de filtres.
+ */
+export function FilterToolbar({
+  facets,
+  total,
+}: {
+  facets: Facets;
+  total: number;
+}) {
+  const { params, pending, setSingle, activeCount } = useFilterState();
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   return (
     <>
-      {/* Barre d'outils : tri, compteur, accès aux filtres sur mobile */}
       <div className="mb-10 flex items-center justify-between gap-4 border-b border-line pb-5">
         <p className="text-[11px] uppercase tracking-[0.16em] text-foreground-muted">
           {pending ? "Chargement…" : `${total} produit${total > 1 ? "s" : ""}`}
@@ -250,10 +275,6 @@ export function Filters({ facets, total }: { facets: Facets; total: number }) {
         </div>
       </div>
 
-      <aside className="hidden lg:block" aria-label="Filtres">
-        {panel}
-      </aside>
-
       <AnimatePresence>
         {drawerOpen && (
           <motion.div
@@ -285,7 +306,7 @@ export function Filters({ facets, total }: { facets: Facets; total: number }) {
                   <X className="h-5 w-5" aria-hidden />
                 </button>
               </div>
-              {panel}
+              <FilterPanel facets={facets} />
               <button
                 type="button"
                 onClick={() => setDrawerOpen(false)}
@@ -335,5 +356,14 @@ function CheckboxRow({
       />
       {label}
     </label>
+  );
+}
+
+/** Colonne de filtres du catalogue, sur grand écran. */
+export function FilterSidebar({ facets }: { facets: Facets }) {
+  return (
+    <aside className="hidden lg:block" aria-label="Filtres">
+      <FilterPanel facets={facets} />
+    </aside>
   );
 }
