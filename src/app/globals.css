@@ -221,3 +221,54 @@
     opacity: 0;
   }
 }
+
+@layer components {
+  /* Mise en forme des textes juridiques : lisibilité avant tout. */
+  .legal-prose ul,
+  .legal-prose ol {
+    margin-block: 0.75rem;
+    padding-inline-start: 1.5rem;
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .legal-prose ul {
+    list-style: disc;
+  }
+
+  .legal-prose ol {
+    list-style: decimal;
+  }
+
+  .legal-prose a {
+    color: var(--accent);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .legal-prose h3 {
+    margin-top: 1.75rem;
+    font-size: 1.0625rem;
+    color: var(--foreground);
+  }
+
+  .legal-prose table {
+    width: 100%;
+    margin-block: 1.25rem;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+  }
+
+  .legal-prose th,
+  .legal-prose td {
+    border: 1px solid var(--border);
+    padding: 0.75rem;
+    text-align: left;
+    vertical-align: top;
+  }
+
+  .legal-prose th {
+    color: var(--foreground);
+    font-weight: 500;
+  }
+}
