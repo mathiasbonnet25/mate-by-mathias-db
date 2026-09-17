@@ -34,14 +34,14 @@ export default async function DevisPage() {
 
   if (quotes.length === 0) {
     return (
-      <div className="border border-line p-12 text-center">
+      <div className="rounded-lg border border-line p-12 text-center">
         <p className="font-display text-2xl">Aucune demande de devis</p>
         <p className="mt-3 text-sm text-foreground-muted">
           Composez votre projet dans l&apos;atelier de personnalisation.
         </p>
         <Link
           href="/personnalisation"
-          className="mt-8 inline-block border border-line px-7 py-3 text-[11px] uppercase tracking-[0.18em] transition-colors hover:border-accent hover:text-accent"
+          className="mt-8 inline-block rounded-full border border-line px-8 py-3 text-[11px] uppercase tracking-[0.18em] transition-colors hover:border-accent hover:text-accent"
         >
           Atelier personnalisation
         </Link>
@@ -59,7 +59,7 @@ export default async function DevisPage() {
         } | null;
 
         return (
-          <li key={quote.id} className="border border-line p-7">
+          <li key={quote.id} className="card-soft p-7">
             <div className="flex flex-wrap items-start justify-between gap-5">
               <div>
                 <p className="font-display text-xl">{quote.number}</p>

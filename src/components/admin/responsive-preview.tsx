@@ -38,7 +38,7 @@ export function ResponsivePreview() {
 
   return (
     <div className="space-y-5">
-      <div className="flex flex-wrap items-end gap-4 border border-line bg-surface p-5">
+      <div className="flex flex-wrap items-end gap-4 rounded-lg border border-line bg-surface p-5">
         <div>
           <span className="eyebrow">Format</span>
           <div className="mt-2 flex gap-1">
@@ -66,7 +66,7 @@ export function ResponsivePreview() {
           <select
             value={path}
             onChange={(e) => setPath(e.target.value)}
-            className="mt-2 h-11 w-full border border-line bg-transparent px-3 text-sm outline-none focus:border-accent"
+            className="mt-2 h-11 w-full rounded-sm border border-line bg-transparent px-3 text-sm outline-none focus:border-accent"
           >
             {PAGES.map((page) => (
               <option key={page.path} value={page.path}>
@@ -79,7 +79,7 @@ export function ResponsivePreview() {
         <button
           type="button"
           onClick={() => setReloadKey((k) => k + 1)}
-          className="inline-flex h-11 items-center gap-2 border border-line px-5 text-[11px] uppercase tracking-[0.14em] transition-colors hover:border-accent hover:text-accent"
+          className="inline-flex h-11 items-center gap-2 rounded-full border border-line px-5 text-[11px] uppercase tracking-[0.14em] transition-colors hover:border-accent hover:text-accent"
         >
           <RefreshCw className="h-3.5 w-3.5" aria-hidden />
           Recharger
@@ -89,7 +89,7 @@ export function ResponsivePreview() {
           href={path}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex h-11 items-center gap-2 border border-line px-5 text-[11px] uppercase tracking-[0.14em] transition-colors hover:border-accent hover:text-accent"
+          className="inline-flex h-11 items-center gap-2 rounded-full border border-line px-5 text-[11px] uppercase tracking-[0.14em] transition-colors hover:border-accent hover:text-accent"
         >
           <ExternalLink className="h-3.5 w-3.5" aria-hidden />
           Ouvrir
@@ -100,9 +100,9 @@ export function ResponsivePreview() {
         </p>
       </div>
 
-      <div className="flex justify-center overflow-auto border border-line bg-surface-muted p-6">
+      <div className="flex justify-center overflow-auto rounded-lg border border-line bg-surface-muted p-6">
         <div
-          className="shrink-0 border border-line bg-white shadow-sm"
+          className="shrink-0 overflow-hidden rounded-md border border-line bg-white shadow-[var(--shadow-lifted)]"
           style={{
             width: current.width,
             height: current.height,

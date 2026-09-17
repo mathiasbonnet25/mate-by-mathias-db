@@ -61,7 +61,7 @@ export function SignInForm() {
           autoComplete="email"
           value={form.email}
           onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
-          className="mt-3 h-12 w-full border border-line bg-transparent px-4 text-sm outline-none transition-colors focus:border-accent"
+          className="mt-3 h-12 w-full rounded-sm border border-line bg-transparent px-4 text-sm outline-none transition-colors focus:border-accent"
         />
       </label>
 
@@ -73,7 +73,7 @@ export function SignInForm() {
           autoComplete="current-password"
           value={form.password}
           onChange={(e) => setForm((f) => ({ ...f, password: e.target.value }))}
-          className="mt-3 h-12 w-full border border-line bg-transparent px-4 text-sm outline-none transition-colors focus:border-accent"
+          className="mt-3 h-12 w-full rounded-sm border border-line bg-transparent px-4 text-sm outline-none transition-colors focus:border-accent"
         />
       </label>
 
@@ -105,7 +105,7 @@ export function SignInForm() {
                     totp: e.target.value.replace(/\D/g, ""),
                   }))
                 }
-                className="mt-3 h-12 w-full border border-line bg-transparent px-4 text-center text-lg tracking-[0.5em] outline-none transition-colors focus:border-accent"
+                className="mt-3 h-12 w-full rounded-sm border border-line bg-transparent px-4 text-center text-lg tracking-[0.5em] outline-none transition-colors focus:border-accent"
               />
             </label>
           ) : (
@@ -124,7 +124,7 @@ export function SignInForm() {
                     recoveryCode: e.target.value.toUpperCase(),
                   }))
                 }
-                className="mt-3 h-12 w-full border border-line bg-transparent px-4 text-center text-sm uppercase tracking-[0.2em] outline-none transition-colors focus:border-accent"
+                className="mt-3 h-12 w-full rounded-sm border border-line bg-transparent px-4 text-center text-sm uppercase tracking-[0.2em] outline-none transition-colors focus:border-accent"
               />
             </label>
           )}

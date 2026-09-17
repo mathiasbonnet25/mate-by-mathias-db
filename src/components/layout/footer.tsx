@@ -52,7 +52,7 @@ export function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={label}
-                  className="grid h-10 w-10 place-items-center border border-line text-foreground-muted transition-colors hover:border-accent hover:text-accent"
+                  className="grid h-10 w-10 place-items-center rounded-full border border-line text-foreground-muted transition-colors hover:border-accent hover:text-accent"
                 >
                   <Icon className="h-4 w-4" aria-hidden />
                 </a>
@@ -60,7 +60,7 @@ export function Footer() {
               <a
                 href="mailto:contact@matebymathias.fr"
                 aria-label="Nous écrire"
-                className="grid h-10 w-10 place-items-center border border-line text-foreground-muted transition-colors hover:border-accent hover:text-accent"
+                className="grid h-10 w-10 place-items-center rounded-full border border-line text-foreground-muted transition-colors hover:border-accent hover:text-accent"
               >
                 <Mail className="h-4 w-4" aria-hidden />
               </a>

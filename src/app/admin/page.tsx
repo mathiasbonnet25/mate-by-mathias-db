@@ -135,7 +135,7 @@ export default async function AdminDashboard() {
               <Link
                 key={status}
                 href={`/admin/commandes?statut=${status}`}
-                className="border border-line p-5 transition-colors hover:border-accent/50"
+                className="rounded-lg border border-line p-5 transition-colors hover:border-accent/50"
               >
                 <p className="text-[10px] uppercase tracking-[0.14em] text-foreground-muted">
                   {ORDER_STATUS_LABELS[status]}

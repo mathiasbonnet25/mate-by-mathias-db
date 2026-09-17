@@ -163,7 +163,7 @@ function CategoryItem({
       value={row}
       dragListener={false}
       dragControls={controls}
-      className="flex items-center gap-4 border border-line bg-surface p-4"
+      className="flex items-center gap-4 rounded-lg border border-line bg-surface p-4"
     >
       <button
         type="button"
@@ -305,7 +305,7 @@ function CategoryForm({
                 slug: initial ? f.slug : slugify(name),
               }));
             }}
-            className="mt-2 h-11 w-full border border-line bg-transparent px-3 text-sm outline-none focus:border-accent"
+            className="mt-2 h-11 w-full rounded-sm border border-line bg-transparent px-3 text-sm outline-none focus:border-accent"
           />
         </label>
 
@@ -317,7 +317,7 @@ function CategoryForm({
             onChange={(e) =>
               setForm((f) => ({ ...f, slug: slugify(e.target.value) }))
             }
-            className="mt-2 h-11 w-full border border-line bg-transparent px-3 text-sm outline-none focus:border-accent"
+            className="mt-2 h-11 w-full rounded-sm border border-line bg-transparent px-3 text-sm outline-none focus:border-accent"
           />
         </label>
 
@@ -326,7 +326,7 @@ function CategoryForm({
           <select
             value={form.parentId}
             onChange={(e) => setForm((f) => ({ ...f, parentId: e.target.value }))}
-            className="mt-2 h-11 w-full border border-line bg-transparent px-3 text-sm outline-none focus:border-accent"
+            className="mt-2 h-11 w-full rounded-sm border border-line bg-transparent px-3 text-sm outline-none focus:border-accent"
           >
             <option value="">Aucune</option>
             {parents
@@ -346,7 +346,7 @@ function CategoryForm({
             maxLength={600}
             placeholder="https://…"
             onChange={(e) => setForm((f) => ({ ...f, imageUrl: e.target.value }))}
-            className="mt-2 h-11 w-full border border-line bg-transparent px-3 font-mono text-[12px] outline-none focus:border-accent"
+            className="mt-2 h-11 w-full rounded-sm border border-line bg-transparent px-3 font-mono text-[12px] outline-none focus:border-accent"
           />
         </label>
 
@@ -359,7 +359,7 @@ function CategoryForm({
             onChange={(e) =>
               setForm((f) => ({ ...f, description: e.target.value }))
             }
-            className="mt-2 w-full border border-line bg-transparent p-3 text-sm outline-none focus:border-accent"
+            className="mt-2 w-full rounded-sm border border-line bg-transparent p-3 text-sm outline-none focus:border-accent"
           />
         </label>
       </div>

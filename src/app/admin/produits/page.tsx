@@ -81,7 +81,7 @@ export default async function AdminProductsPage({
               name="q"
               defaultValue={query ?? ""}
               placeholder="Nom, adresse ou référence"
-              className="mt-2 h-11 w-full border border-line bg-transparent px-4 text-sm outline-none focus:border-accent"
+              className="mt-2 h-11 w-full rounded-sm border border-line bg-transparent px-4 text-sm outline-none focus:border-accent"
             />
           </label>
 
@@ -90,7 +90,7 @@ export default async function AdminProductsPage({
             <select
               name="univers"
               defaultValue={params.univers ?? ""}
-              className="mt-2 h-11 border border-line bg-transparent px-4 text-sm outline-none focus:border-accent"
+              className="mt-2 h-11 rounded-sm border border-line bg-transparent px-4 text-sm outline-none focus:border-accent"
             >
               <option value="">Tous</option>
               <option value="VELOS">Cadres &amp; Vélos</option>
@@ -103,7 +103,7 @@ export default async function AdminProductsPage({
             <select
               name="statut"
               defaultValue={params.statut ?? ""}
-              className="mt-2 h-11 border border-line bg-transparent px-4 text-sm outline-none focus:border-accent"
+              className="mt-2 h-11 rounded-sm border border-line bg-transparent px-4 text-sm outline-none focus:border-accent"
             >
               <option value="">Tous</option>
               {Object.entries(STATUS_LABELS).map(([key, label]) => (

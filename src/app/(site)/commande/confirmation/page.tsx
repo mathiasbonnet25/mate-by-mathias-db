@@ -88,7 +88,7 @@ export default async function ConfirmationPage({
             </p>
 
             {paiement === "indisponible" && (
-              <p className="mx-auto mt-6 max-w-md border border-line p-4 text-[12px] leading-relaxed text-foreground-muted">
+              <p className="mx-auto mt-6 max-w-md rounded-lg border border-line p-4 text-[12px] leading-relaxed text-foreground-muted">
                 Le module de paiement n&apos;est pas configuré sur cet
                 environnement. La commande a bien été créée et reste en attente
                 de règlement.
@@ -105,7 +105,7 @@ export default async function ConfirmationPage({
         <div className="mt-11 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <Link
             href="/compte/commandes"
-            className="h-12 border border-line px-8 text-[11px] uppercase leading-[3rem] tracking-[0.18em] transition-colors hover:border-accent hover:text-accent"
+            className="h-12 rounded-full border border-line px-8 text-[11px] uppercase leading-[3rem] tracking-[0.18em] transition-colors hover:border-accent hover:text-accent"
           >
             Suivre ma commande
           </Link>

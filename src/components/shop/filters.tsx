@@ -247,7 +247,7 @@ export function FilterToolbar({
           <button
             type="button"
             onClick={() => setDrawerOpen(true)}
-            className="inline-flex items-center gap-2 border border-line px-4 py-2 text-[11px] uppercase tracking-[0.16em] transition-colors hover:border-accent lg:hidden"
+            className="inline-flex items-center gap-2 rounded-full border border-line px-5 py-2 text-[11px] uppercase tracking-[0.16em] transition-colors hover:border-accent lg:hidden"
           >
             <SlidersHorizontal className="h-3.5 w-3.5" aria-hidden />
             Filtres
@@ -263,7 +263,7 @@ export function FilterToolbar({
             <select
               value={params.get("tri") ?? "recent"}
               onChange={(e) => setSingle("tri", e.target.value)}
-              className="cursor-pointer border border-line bg-transparent px-4 py-2 text-[11px] uppercase tracking-[0.16em] outline-none transition-colors hover:border-accent"
+              className="cursor-pointer rounded-sm border border-line bg-transparent px-4 py-2 text-[11px] uppercase tracking-[0.16em] outline-none transition-colors hover:border-accent"
             >
               {SORTS.map((s) => (
                 <option key={s.value} value={s.value}>

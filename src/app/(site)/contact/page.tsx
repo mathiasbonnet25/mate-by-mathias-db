@@ -35,7 +35,7 @@ export default async function ContactPage() {
           </Reveal>
 
           <Reveal delay={0.1}>
-            <aside className="space-y-9 border border-line p-7">
+            <aside className="space-y-9 rounded-lg border border-line p-7">
               <div>
                 <h2 className="eyebrow">Courriel</h2>
                 <a

@@ -38,7 +38,7 @@ export default function MotDePasseOubliePage() {
           </Link>
           <Link
             href="/connexion"
-            className="h-12 border border-line px-8 text-[11px] uppercase leading-[3rem] tracking-[0.18em] transition-colors hover:border-accent hover:text-accent"
+            className="h-12 rounded-full border border-line px-8 text-[11px] uppercase leading-[3rem] tracking-[0.18em] transition-colors hover:border-accent hover:text-accent"
           >
             Retour à la connexion
           </Link>

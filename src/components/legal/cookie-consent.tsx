@@ -164,7 +164,7 @@ export function CookieConsentProvider({
                 <button
                   type="button"
                   onClick={() => persist(rejectAll(), "BANNER")}
-                  className="h-11 border border-line px-6 text-[11px] uppercase tracking-[0.18em] transition-colors hover:border-accent hover:text-accent"
+                  className="h-11 rounded-full border border-line px-6 text-[11px] uppercase tracking-[0.18em] transition-colors hover:border-accent hover:text-accent"
                 >
                   Tout refuser
                 </button>
@@ -176,7 +176,7 @@ export function CookieConsentProvider({
                     setDraft(DEFAULT_CHOICES);
                     setPanelOpen(true);
                   }}
-                  className="h-11 border border-line px-6 text-[11px] uppercase tracking-[0.18em] transition-colors hover:border-accent hover:text-accent"
+                  className="h-11 rounded-full border border-line px-6 text-[11px] uppercase tracking-[0.18em] transition-colors hover:border-accent hover:text-accent"
                 >
                   Personnaliser
                 </button>
@@ -211,7 +211,7 @@ export function CookieConsentProvider({
               role="dialog"
               aria-modal="true"
               aria-labelledby="cookie-panel-title"
-              className="max-h-[88vh] w-full overflow-y-auto border border-line bg-surface p-7 sm:max-w-2xl"
+              className="max-h-[88vh] w-full overflow-y-auto rounded-lg border border-line bg-surface p-7 sm:max-w-2xl"
             >
               <h2 id="cookie-panel-title" className="font-display text-2xl">
                 Préférences de cookies
@@ -229,7 +229,7 @@ export function CookieConsentProvider({
                     return (
                       <div
                         key={key}
-                        className="border border-line p-5 transition-colors hover:border-accent/40"
+                        className="rounded-lg border border-line p-5 transition-colors hover:border-accent/40"
                       >
                         <div className="flex items-start justify-between gap-5">
                           <div>
@@ -271,14 +271,14 @@ export function CookieConsentProvider({
                 <button
                   type="button"
                   onClick={() => persist(rejectAll(), "PREFERENCES")}
-                  className="h-11 border border-line px-6 text-[11px] uppercase tracking-[0.18em] transition-colors hover:border-accent hover:text-accent"
+                  className="h-11 rounded-full border border-line px-6 text-[11px] uppercase tracking-[0.18em] transition-colors hover:border-accent hover:text-accent"
                 >
                   Tout refuser
                 </button>
                 <button
                   type="button"
                   onClick={() => persist(draft, "PREFERENCES")}
-                  className="h-11 border border-line px-6 text-[11px] uppercase tracking-[0.18em] transition-colors hover:border-accent hover:text-accent"
+                  className="h-11 rounded-full border border-line px-6 text-[11px] uppercase tracking-[0.18em] transition-colors hover:border-accent hover:text-accent"
                 >
                   Enregistrer mes choix
                 </button>

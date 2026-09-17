@@ -47,7 +47,7 @@ export function CartView({ cart }: { cart: CartViewData }) {
 
   if (cart.items.length === 0) {
     return (
-      <div className="border border-line py-28 text-center">
+      <div className="rounded-lg border border-line py-28 text-center">
         <p className="font-display text-3xl">Votre panier est vide</p>
         <p className="mx-auto mt-4 max-w-md text-sm text-foreground-muted">
           Parcourez la boutique ou composez directement votre projet à
@@ -56,7 +56,7 @@ export function CartView({ cart }: { cart: CartViewData }) {
         <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <Link
             href="/velos"
-            className="h-12 border border-line px-8 text-[11px] uppercase leading-[3rem] tracking-[0.18em] transition-colors hover:border-accent hover:text-accent"
+            className="h-12 rounded-full border border-line px-8 text-[11px] uppercase leading-[3rem] tracking-[0.18em] transition-colors hover:border-accent hover:text-accent"
           >
             Cadres & Vélos
           </Link>
@@ -126,7 +126,7 @@ export function CartView({ cart }: { cart: CartViewData }) {
                   </div>
 
                   <div className="flex items-center justify-between gap-4">
-                    <div className="flex items-center border border-line">
+                    <div className="flex items-center rounded-full border border-line">
                       <button
                         type="button"
                         disabled={pending}
@@ -201,7 +201,7 @@ export function CartView({ cart }: { cart: CartViewData }) {
 
       {/* Récapitulatif */}
       <aside className="lg:sticky lg:top-[104px] lg:self-start">
-        <div className="border border-line p-7">
+        <div className="card-soft p-7">
           <h2 className="eyebrow">Récapitulatif</h2>
 
           <form
@@ -223,7 +223,7 @@ export function CartView({ cart }: { cart: CartViewData }) {
             <label htmlFor="promo" className="sr-only">
               Code promotionnel
             </label>
-            <div className="flex items-center border border-line focus-within:border-accent">
+            <div className="flex items-center rounded-full border border-line px-1 focus-within:border-accent">
               <Tag className="ml-3 h-3.5 w-3.5 text-foreground-muted" aria-hidden />
               <input
                 id="promo"

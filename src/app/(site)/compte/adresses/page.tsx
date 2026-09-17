@@ -30,13 +30,13 @@ export default async function AdressesPage() {
       </div>
 
       {addresses.length === 0 ? (
-        <p className="border border-line p-8 text-sm text-foreground-muted">
+        <p className="rounded-lg border border-line p-8 text-sm text-foreground-muted">
           Aucune adresse enregistrée pour le moment.
         </p>
       ) : (
         <ul className="grid gap-4 sm:grid-cols-2">
           {addresses.map((address) => (
-            <li key={address.id} className="border border-line p-6">
+            <li key={address.id} className="card-soft p-6">
               <p className="text-[11px] uppercase tracking-[0.14em] text-accent">
                 {address.type === "SHIPPING" ? "Livraison" : "Facturation"}
                 {address.isDefault ? " · par défaut" : ""}

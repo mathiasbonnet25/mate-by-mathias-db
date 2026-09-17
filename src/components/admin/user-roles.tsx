@@ -40,7 +40,7 @@ export function UserRoles({ users }: { users: UserRow[] }) {
       {users.map((user) => (
         <div
           key={user.id}
-          className="flex flex-wrap items-center justify-between gap-4 border border-line p-4"
+          className="flex flex-wrap items-center justify-between gap-4 rounded-lg border border-line p-4"
         >
           <div className="min-w-56 flex-1">
             <p className="text-sm">
@@ -94,7 +94,7 @@ export function UserRoles({ users }: { users: UserRow[] }) {
                   router.refresh();
                 })
               }
-              className="h-10 border border-line bg-transparent px-3 text-[12px] outline-none focus:border-accent disabled:opacity-50"
+              className="h-10 rounded-sm border border-line bg-transparent px-3 text-[12px] outline-none focus:border-accent disabled:opacity-50"
             >
               {Object.entries(ROLE_LABELS).map(([key, label]) => (
                 <option key={key} value={key}>

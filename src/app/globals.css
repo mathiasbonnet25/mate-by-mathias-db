@@ -39,8 +39,39 @@
   --color-ink-950: #0d0d0c;
 
   --ease-premium: cubic-bezier(0.22, 1, 0.36, 1);
+  /* Courbe douce, sans rebond : l'élan part vite puis se pose. */
+  --ease-soft: cubic-bezier(0.32, 0.72, 0, 1);
 
   --spacing-section: 7rem;
+
+  /* ------------------------------------------------------------------
+     Rayons.
+
+     Le site partait d'angles vifs partout, ce qui lui donnait l'allure
+     d'un logiciel de gestion. L'échelle ci-dessous est volontairement
+     généreuse : un rayon timide (2 ou 4 px) se remarque à peine et
+     produit un entre-deux mou. Mieux vaut assumer la rondeur.
+     ------------------------------------------------------------------ */
+  --radius-xs: 0.5rem;   /* 8px  — petits marqueurs, pastilles carrées */
+  --radius-sm: 0.875rem; /* 14px — champs de saisie, cases */
+  --radius-md: 1.25rem;  /* 20px — encadrés secondaires */
+  --radius-lg: 1.75rem;  /* 28px — cartes, panneaux */
+  --radius-xl: 2.75rem;  /* 44px — grandes cartes, visuels */
+  --radius-2xl: 4rem;    /* 64px — blocs pleine largeur */
+
+  /* Arche : un dôme surbaissé en haut, des angles doux en bas. C'est la
+     forme signature de la maison — celle d'une porte d'atelier.
+     Les rayons sont proportionnels pour que la courbe reste une arche sur
+     une vignette comme sur un bloc pleine largeur. */
+  --radius-arch: 50% 50% var(--radius-xl) var(--radius-xl) /
+    24% 24% var(--radius-xl) var(--radius-xl);
+
+  /* Ombres très diffuses : la profondeur vient de la lumière, pas d'un
+     trait. Une ombre dure trahirait tout de suite le composant générique. */
+  --shadow-soft: 0 1px 2px rgba(13, 13, 12, 0.04),
+    0 8px 24px -12px rgba(13, 13, 12, 0.10);
+  --shadow-lifted: 0 2px 4px rgba(13, 13, 12, 0.05),
+    0 24px 48px -20px rgba(13, 13, 12, 0.18);
 }
 
 :root {
@@ -69,6 +100,10 @@
   --accent: #cfa758;
   --accent-contrast: #0d0d0c;
   --overlay: rgba(0, 0, 0, 0.7);
+  --shadow-soft: 0 1px 2px rgba(0, 0, 0, 0.5),
+    0 8px 28px -14px rgba(0, 0, 0, 0.8);
+  --shadow-lifted: 0 2px 6px rgba(0, 0, 0, 0.6),
+    0 28px 56px -24px rgba(0, 0, 0, 0.9);
 
   color-scheme: dark;
 }
@@ -84,6 +119,10 @@
     --accent: #cfa758;
     --accent-contrast: #0d0d0c;
     --overlay: rgba(0, 0, 0, 0.7);
+    --shadow-soft: 0 1px 2px rgba(0, 0, 0, 0.5),
+      0 8px 28px -14px rgba(0, 0, 0, 0.8);
+    --shadow-lifted: 0 2px 6px rgba(0, 0, 0, 0.6),
+      0 28px 56px -24px rgba(0, 0, 0, 0.9);
 
     color-scheme: dark;
   }
@@ -133,7 +172,9 @@
   :focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 3px;
-    border-radius: 2px;
+    /* Suit la rondeur de l'élément plutôt que de dessiner un rectangle
+       par-dessus une carte arrondie. */
+    border-radius: inherit;
   }
 
   /* Respect de la préférence « animations réduites ». */
@@ -323,5 +364,127 @@
 
   .hero-pulse {
     animation: hero-pulse 2.4s ease-in-out infinite;
+  }
+}
+
+/* ==========================================================================
+   Formes organiques
+
+   Le vocabulaire de formes de la maison. Trois idées seulement, appliquées
+   avec constance : l'arche, la carte adoucie et la transition courbe entre
+   sections. Un site devient bavard quand chaque bloc invente sa forme.
+   ========================================================================== */
+
+@layer components {
+  /* Carte : rayon généreux, bordure discrète, ombre très diffuse.
+     C'est le remplaçant direct des « border border-line » à angles vifs. */
+  .card-soft {
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    background-color: var(--surface);
+    box-shadow: var(--shadow-soft);
+    transition:
+      box-shadow 0.6s var(--ease-soft),
+      border-color 0.6s var(--ease-soft),
+      transform 0.6s var(--ease-soft);
+  }
+
+  .card-soft-hover:hover {
+    border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+    box-shadow: var(--shadow-lifted);
+    transform: translateY(-4px);
+  }
+
+  /* Arche : la forme signature. Un cadre de vélo passe sous une porte
+     d'atelier — c'est de là que vient le dessin. */
+  .arch {
+    border-radius: var(--radius-arch);
+    overflow: hidden;
+  }
+
+  /* Arche inversée. Réservée aux visuels sans contenu en pied : la courbe
+     basse rognerait un bouton ou une légende. */
+  .arch-down {
+    border-radius: var(--radius-xl) var(--radius-xl) 50% 50% /
+      var(--radius-xl) var(--radius-xl) 24% 24%;
+    overflow: hidden;
+  }
+
+  /* Galet : rayons inégaux, légèrement irréguliers. À n'employer que sur
+     les visuels, jamais sur du texte — l'irrégularité gênerait la lecture. */
+  .pebble {
+    border-radius: 42% 58% 54% 46% / 46% 42% 58% 54%;
+    overflow: hidden;
+  }
+
+  .pebble-soft {
+    border-radius: var(--radius-2xl) var(--radius-xl) var(--radius-2xl)
+      var(--radius-xl);
+    overflow: hidden;
+  }
+
+  /* Transition courbe entre deux sections : la section du dessus se
+     termine par un arc plutôt que par une ligne droite. Le pseudo-élément
+     est décoratif, donc invisible aux lecteurs d'écran. */
+  .curve-bottom {
+    position: relative;
+  }
+
+  .curve-bottom::after {
+    content: "";
+    position: absolute;
+    left: -5%;
+    right: -5%;
+    bottom: -1px;
+    height: 4.5rem;
+    background-color: var(--surface);
+    border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+    pointer-events: none;
+  }
+
+  .curve-bottom-muted::after {
+    background-color: var(--surface-muted);
+  }
+
+  @media (min-width: 768px) {
+    .curve-bottom::after {
+      height: 7rem;
+    }
+  }
+
+  /* Bouton en pilule : la forme la plus douce possible, réservée aux
+     actions. Le contraste de l'or a été vérifié à 5,5:1 sur blanc. */
+  .pill {
+    border-radius: 9999px;
+  }
+
+  /* Halo doré diffus, posé derrière un visuel pour le décoller du fond
+     sans l'encadrer. Purement décoratif. */
+  .glow-gold {
+    position: relative;
+  }
+
+  .glow-gold::before {
+    content: "";
+    position: absolute;
+    inset: -12%;
+    z-index: -1;
+    background: radial-gradient(
+      55% 55% at 50% 45%,
+      color-mix(in srgb, var(--accent) 22%, transparent),
+      transparent 70%
+    );
+    filter: blur(28px);
+    pointer-events: none;
+  }
+}
+
+@layer components {
+  /* Galet miroir : mêmes rayons que .pebble-soft, inversés. Alterner les
+     deux évite que deux cartes voisines ne paraissent identiques. */
+  .pebble-soft-mirror {
+    border-radius: var(--radius-xl) var(--radius-2xl) var(--radius-xl)
+      var(--radius-2xl);
+    overflow: hidden;
   }
 }

@@ -90,7 +90,7 @@ export function QuoteEditor({
 
   return (
     <div className="space-y-4">
-      <section className="border border-line bg-surface p-6">
+      <section className="card-soft p-6">
         <h2 className="eyebrow">Suivi du devis</h2>
 
         <label className="mt-5 block">
@@ -98,7 +98,7 @@ export function QuoteEditor({
           <select
             value={form.status}
             onChange={(e) => setForm((f) => ({ ...f, status: e.target.value }))}
-            className="mt-2 h-11 w-full border border-line bg-transparent px-4 text-sm outline-none focus:border-accent"
+            className="mt-2 h-11 w-full rounded-sm border border-line bg-transparent px-4 text-sm outline-none focus:border-accent"
           >
             {STATUSES.map((s) => (
               <option key={s.value} value={s.value}>
@@ -118,7 +118,7 @@ export function QuoteEditor({
             onChange={(e) =>
               setForm((f) => ({ ...f, quotedEuros: e.target.value }))
             }
-            className="mt-2 h-11 w-full border border-line bg-transparent px-4 text-sm outline-none focus:border-accent"
+            className="mt-2 h-11 w-full rounded-sm border border-line bg-transparent px-4 text-sm outline-none focus:border-accent"
           />
           <span className="mt-2 block text-[11px] text-foreground-muted">
             Estimation calculée en ligne :{" "}
@@ -137,7 +137,7 @@ export function QuoteEditor({
             onChange={(e) =>
               setForm((f) => ({ ...f, validUntil: e.target.value }))
             }
-            className="mt-2 h-11 w-full border border-line bg-transparent px-4 text-sm outline-none focus:border-accent"
+            className="mt-2 h-11 w-full rounded-sm border border-line bg-transparent px-4 text-sm outline-none focus:border-accent"
           />
         </label>
 
@@ -150,7 +150,7 @@ export function QuoteEditor({
             onChange={(e) =>
               setForm((f) => ({ ...f, internalNote: e.target.value }))
             }
-            className="mt-2 w-full border border-line bg-transparent p-3 text-sm outline-none focus:border-accent"
+            className="mt-2 w-full rounded-sm border border-line bg-transparent p-3 text-sm outline-none focus:border-accent"
           />
         </label>
 
@@ -165,7 +165,7 @@ export function QuoteEditor({
         </button>
       </section>
 
-      <section className="border border-line bg-surface p-6">
+      <section className="card-soft p-6">
         <h2 className="eyebrow">Transformer en commande</h2>
         {alreadyConverted ? (
           <p className="mt-4 text-[13px] text-foreground-muted">
@@ -183,7 +183,7 @@ export function QuoteEditor({
               type="button"
               onClick={convert}
               disabled={pending}
-              className="mt-5 inline-flex h-11 items-center gap-2 border border-line px-6 text-[11px] uppercase tracking-[0.16em] transition-colors hover:border-accent hover:text-accent disabled:opacity-50"
+              className="mt-5 inline-flex h-11 items-center gap-2 rounded-full border border-line px-6 text-[11px] uppercase tracking-[0.16em] transition-colors hover:border-accent hover:text-accent disabled:opacity-50"
             >
               <ArrowRightLeft className="h-3.5 w-3.5" aria-hidden />
               Créer la commande

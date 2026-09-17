@@ -43,7 +43,7 @@ export function TrackerPanel({ trackers }: { trackers: TrackerRow[] }) {
       {trackers.map((tracker) => (
         <div
           key={tracker.id}
-          className="flex flex-wrap items-center justify-between gap-4 border border-line p-4"
+          className="flex flex-wrap items-center justify-between gap-4 rounded-lg border border-line p-4"
         >
           <div className="min-w-56 flex-1">
             <p className="text-sm">
@@ -197,7 +197,7 @@ export function DataRequestPanel({ requests }: { requests: DataRequestRow[] }) {
                     maxLength={3000}
                     value={resolution}
                     onChange={(e) => setResolution(e.target.value)}
-                    className="mt-2 w-full border border-line bg-transparent p-3 text-sm outline-none focus:border-accent"
+                    className="mt-2 w-full rounded-sm border border-line bg-transparent p-3 text-sm outline-none focus:border-accent"
                   />
                 </label>
 
@@ -224,7 +224,7 @@ export function DataRequestPanel({ requests }: { requests: DataRequestRow[] }) {
                           router.refresh();
                         })
                       }
-                      className="border border-line px-4 py-2 text-[11px] uppercase tracking-[0.12em] transition-colors hover:border-accent hover:text-accent disabled:opacity-50"
+                      className="rounded-full border border-line px-5 py-2 text-[11px] uppercase tracking-[0.12em] transition-colors hover:border-accent hover:text-accent disabled:opacity-50"
                     >
                       {pending ? (
                         <Loader2 className="h-3 w-3 animate-spin" aria-hidden />

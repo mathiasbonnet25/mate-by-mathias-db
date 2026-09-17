@@ -125,7 +125,7 @@ export function Configurator({
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="mx-auto max-w-2xl border border-line p-12 text-center"
+        className="mx-auto max-w-2xl rounded-lg border border-line p-12 text-center"
       >
         <span className="mx-auto grid h-14 w-14 place-items-center rounded-full border border-accent text-accent">
           <Check className="h-6 w-6" aria-hidden />
@@ -315,7 +315,7 @@ export function Configurator({
                   }
                   maxLength={3000}
                   placeholder="Marque et modèle du cadre, teintes souhaitées, références visuelles, délai idéal…"
-                  className="mt-3 w-full border border-line bg-transparent p-4 text-sm outline-none transition-colors focus:border-accent"
+                  className="mt-3 w-full rounded-sm border border-line bg-transparent p-4 text-sm outline-none transition-colors focus:border-accent"
                 />
               </label>
 
@@ -386,7 +386,7 @@ export function Configurator({
 
       {/* Estimateur */}
       <aside className="lg:sticky lg:top-[104px] lg:self-start">
-        <div className="border border-line p-7">
+        <div className="card-soft p-7">
           <h2 className="eyebrow">Estimation</h2>
 
           <motion.p
@@ -429,7 +429,7 @@ export function Configurator({
               type="button"
               onClick={() => setStepIndex(STEPS.length)}
               disabled={!selection.support}
-              className="mt-6 h-12 w-full border border-line text-[11px] uppercase tracking-[0.16em] transition-colors hover:border-accent hover:text-accent disabled:opacity-30"
+              className="mt-6 h-12 w-full rounded-full border border-line text-[11px] uppercase tracking-[0.16em] transition-colors hover:border-accent hover:text-accent disabled:opacity-30"
             >
               Demander un devis
             </button>
@@ -477,7 +477,7 @@ function Field({
         autoComplete={autoComplete}
         maxLength={160}
         onChange={(e) => onChange(e.target.value)}
-        className="mt-3 h-12 w-full border border-line bg-transparent px-4 text-sm outline-none transition-colors focus:border-accent"
+        className="mt-3 h-12 w-full rounded-sm border border-line bg-transparent px-4 text-sm outline-none transition-colors focus:border-accent"
       />
     </label>
   );

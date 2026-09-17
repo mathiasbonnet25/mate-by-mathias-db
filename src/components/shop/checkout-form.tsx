@@ -181,14 +181,14 @@ export function CheckoutForm({
             maxLength={1000}
             onChange={(e) => setNote(e.target.value)}
             placeholder="Code d'accès, étage, créneau de livraison…"
-            className="mt-5 w-full border border-line bg-transparent p-4 text-sm outline-none transition-colors focus:border-accent"
+            className="mt-5 w-full rounded-sm border border-line bg-transparent p-4 text-sm outline-none transition-colors focus:border-accent"
           />
         </fieldset>
       </div>
 
       {/* Récapitulatif et validation */}
       <aside className="lg:sticky lg:top-[104px] lg:self-start">
-        <div className="border border-line p-7">
+        <div className="card-soft p-7">
           <h2 className="eyebrow">Votre commande</h2>
 
           <ul className="mt-6 space-y-4 border-b border-line pb-6">
@@ -351,7 +351,7 @@ function AddressFields({
         <select
           value={value.country}
           onChange={(e) => set("country")(e.target.value)}
-          className="mt-3 h-12 w-full border border-line bg-transparent px-4 text-sm outline-none transition-colors focus:border-accent"
+          className="mt-3 h-12 w-full rounded-sm border border-line bg-transparent px-4 text-sm outline-none transition-colors focus:border-accent"
         >
           {COUNTRIES.map((c) => (
             <option key={c.code} value={c.code}>
@@ -393,7 +393,7 @@ function Field({
         autoComplete={autoComplete}
         maxLength={200}
         onChange={(e) => onChange(e.target.value)}
-        className="mt-3 h-12 w-full border border-line bg-transparent px-4 text-sm outline-none transition-colors focus:border-accent"
+        className="mt-3 h-12 w-full rounded-sm border border-line bg-transparent px-4 text-sm outline-none transition-colors focus:border-accent"
       />
     </label>
   );

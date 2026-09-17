@@ -56,7 +56,7 @@ export default async function ConfirmationPage({
         </p>
         <Link
           href="/"
-          className="mt-10 inline-block border border-line px-8 py-3.5 text-[11px] uppercase tracking-[0.18em] transition-colors hover:border-accent hover:text-accent"
+          className="mt-10 inline-block rounded-full border border-line px-9 py-3.5 text-[11px] uppercase tracking-[0.18em] transition-colors hover:border-accent hover:text-accent"
         >
           Retour à l&apos;accueil
         </Link>

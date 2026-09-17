@@ -76,12 +76,12 @@ export function Stat({
   return href ? (
     <Link
       href={href}
-      className="block border border-line bg-surface p-6 transition-colors hover:border-accent/50"
+      className="block rounded-lg border border-line bg-surface p-6 transition-colors hover:border-accent/50"
     >
       {body}
     </Link>
   ) : (
-    <div className="border border-line bg-surface p-6">{body}</div>
+    <div className="card-soft p-6">{body}</div>
   );
 }
 

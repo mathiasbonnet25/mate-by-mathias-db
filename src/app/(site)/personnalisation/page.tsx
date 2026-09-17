@@ -81,7 +81,7 @@ export default async function PersonnalisationPage() {
         </div>
 
         <Reveal delay={0.2}>
-          <div className="mt-16 border border-line p-8 text-[13px] leading-relaxed text-foreground-muted">
+          <div className="mt-16 rounded-lg border border-line p-8 text-[13px] leading-relaxed text-foreground-muted">
             <p>
               <strong className="text-foreground">Bon à savoir.</strong> Une
               pièce peinte selon vos spécifications est un bien confectionné

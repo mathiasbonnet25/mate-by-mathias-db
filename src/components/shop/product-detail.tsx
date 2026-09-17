@@ -273,7 +273,7 @@ export function ProductDetail({ product }: { product: ProductDetailData }) {
 
         {/* Quantité et achat */}
         <div className="mt-8 flex items-stretch gap-3">
-          <div className="flex items-center border border-line">
+          <div className="flex items-center rounded-full border border-line">
             <button
               type="button"
               onClick={() => setQuantity((q) => Math.max(1, q - 1))}
@@ -332,7 +332,7 @@ export function ProductDetail({ product }: { product: ProductDetailData }) {
           type="button"
           disabled={!available || pending}
           onClick={() => handleAdd("checkout")}
-          className="mt-3 h-12 w-full border border-line text-[11px] uppercase tracking-[0.18em] transition-colors hover:border-accent hover:text-accent disabled:cursor-not-allowed disabled:opacity-40"
+          className="mt-3 h-12 w-full rounded-full border border-line text-[11px] uppercase tracking-[0.18em] transition-colors hover:border-accent hover:text-accent disabled:cursor-not-allowed disabled:opacity-40"
         >
           Acheter maintenant
         </button>

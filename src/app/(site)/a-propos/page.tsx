@@ -164,7 +164,7 @@ export default async function AProposPage() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={label}
-                className="grid h-12 w-12 place-items-center border border-line transition-colors hover:border-accent hover:text-accent"
+                className="grid h-12 w-12 place-items-center rounded-full border border-line transition-colors hover:border-accent hover:text-accent"
               >
                 <Icon className="h-4 w-4" aria-hidden />
               </a>

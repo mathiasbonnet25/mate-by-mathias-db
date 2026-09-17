@@ -34,7 +34,7 @@ export function InstagramGrid({
 
   if (!choices.media) {
     return (
-      <div className="border border-line bg-surface-muted p-12 text-center">
+      <div className="rounded-lg border border-line bg-surface-muted p-12 text-center">
         <Instagram className="mx-auto h-6 w-6 text-accent" aria-hidden />
         <p className="mx-auto mt-5 max-w-md text-sm leading-relaxed text-foreground-muted">
           La galerie Instagram est un contenu externe qui dépose ses propres
@@ -52,7 +52,7 @@ export function InstagramGrid({
             href={`https://instagram.com/${handle.replace("@", "")}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="h-11 border border-line px-7 text-[11px] uppercase leading-[2.75rem] tracking-[0.18em] transition-colors hover:border-accent hover:text-accent"
+            className="h-11 rounded-full border border-line px-7 text-[11px] uppercase leading-[2.75rem] tracking-[0.18em] transition-colors hover:border-accent hover:text-accent"
           >
             Voir sur Instagram
           </a>

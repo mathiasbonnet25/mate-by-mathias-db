@@ -70,7 +70,7 @@ export function ContentEditor({ groups }: { groups: ContentGroup[] }) {
   return (
     <div className="space-y-4">
       {groups.map((group) => (
-        <section key={group.title} className="border border-line bg-surface p-6">
+        <section key={group.title} className="card-soft p-6">
           <h2 className="eyebrow">{group.title}</h2>
           {group.description && (
             <p className="mt-2 text-[12px] text-foreground-muted">
@@ -90,7 +90,7 @@ export function ContentEditor({ groups }: { groups: ContentGroup[] }) {
                     onChange={(e) =>
                       setValues((v) => ({ ...v, [field.key]: e.target.value }))
                     }
-                    className="mt-2 w-full border border-line bg-transparent p-3 text-sm outline-none focus:border-accent"
+                    className="mt-2 w-full rounded-sm border border-line bg-transparent p-3 text-sm outline-none focus:border-accent"
                   />
                 ) : (
                   <input
@@ -99,7 +99,7 @@ export function ContentEditor({ groups }: { groups: ContentGroup[] }) {
                     onChange={(e) =>
                       setValues((v) => ({ ...v, [field.key]: e.target.value }))
                     }
-                    className="mt-2 h-11 w-full border border-line bg-transparent px-3 text-sm outline-none focus:border-accent"
+                    className="mt-2 h-11 w-full rounded-sm border border-line bg-transparent px-3 text-sm outline-none focus:border-accent"
                   />
                 )}
                 <span className="mt-1.5 flex flex-wrap items-center gap-2 text-[11px] text-foreground-muted">
@@ -132,7 +132,7 @@ export function ContentEditor({ groups }: { groups: ContentGroup[] }) {
           type="button"
           onClick={() => save(false)}
           disabled={pending}
-          className="inline-flex h-11 items-center gap-2 border border-line px-6 text-[11px] uppercase tracking-[0.16em] transition-colors hover:border-accent hover:text-accent disabled:opacity-50"
+          className="inline-flex h-11 items-center gap-2 rounded-full border border-line px-6 text-[11px] uppercase tracking-[0.16em] transition-colors hover:border-accent hover:text-accent disabled:opacity-50"
         >
           {pending && <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden />}
           Enregistrer en brouillon
@@ -140,7 +140,7 @@ export function ContentEditor({ groups }: { groups: ContentGroup[] }) {
 
         <Link
           href="/admin/apercu"
-          className="inline-flex h-11 items-center gap-2 border border-line px-6 text-[11px] uppercase tracking-[0.16em] transition-colors hover:border-accent hover:text-accent"
+          className="inline-flex h-11 items-center gap-2 rounded-full border border-line px-6 text-[11px] uppercase tracking-[0.16em] transition-colors hover:border-accent hover:text-accent"
         >
           <Eye className="h-3.5 w-3.5" aria-hidden />
           Aperçu responsive

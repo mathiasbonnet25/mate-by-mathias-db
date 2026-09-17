@@ -103,14 +103,14 @@ export function MediaLibrary({
         </p>
       )}
 
-      <div className="flex flex-wrap items-end gap-4 border border-line bg-surface p-6">
+      <div className="flex flex-wrap items-end gap-4 rounded-lg border border-line bg-surface p-6">
         <label className="w-48">
           <span className="eyebrow">Dossier</span>
           <input
             value={folder}
             onChange={(e) => setFolder(e.target.value)}
             placeholder="/atelier"
-            className="mt-2 h-11 w-full border border-line bg-transparent px-3 text-sm outline-none focus:border-accent"
+            className="mt-2 h-11 w-full rounded-sm border border-line bg-transparent px-3 text-sm outline-none focus:border-accent"
           />
         </label>
 
@@ -159,7 +159,7 @@ export function MediaLibrary({
       ) : (
         <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
           {items.map((item) => (
-            <li key={item.id} className="border border-line bg-surface">
+            <li key={item.id} className="card-soft overflow-hidden">
               <div className="relative aspect-square bg-surface-muted">
                 {item.mimeType.startsWith("video/") ? (
                   <video
@@ -200,7 +200,7 @@ export function MediaLibrary({
                       setCopied(item.id);
                       setTimeout(() => setCopied(null), 2000);
                     }}
-                    className="inline-flex flex-1 items-center justify-center gap-1.5 border border-line py-2 text-[10px] uppercase tracking-[0.12em] transition-colors hover:border-accent hover:text-accent"
+                    className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-full border border-line py-2 text-[10px] uppercase tracking-[0.12em] transition-colors hover:border-accent hover:text-accent"
                   >
                     {copied === item.id ? (
                       <Check className="h-3 w-3" aria-hidden />
@@ -215,7 +215,7 @@ export function MediaLibrary({
                     disabled={pending}
                     onClick={() => remove(item.id)}
                     aria-label={`Supprimer ${item.fileName}`}
-                    className="grid h-8 w-8 shrink-0 place-items-center border border-line transition-colors hover:border-red-500 hover:text-red-500"
+                    className="grid h-8 w-8 shrink-0 place-items-center rounded-full border border-line transition-colors hover:border-red-500 hover:text-red-500"
                   >
                     <Trash2 className="h-3 w-3" aria-hidden />
                   </button>

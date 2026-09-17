@@ -211,7 +211,7 @@ function Field({
         autoComplete={autoComplete}
         maxLength={200}
         onChange={(e) => onChange(e.target.value)}
-        className="mt-3 h-12 w-full border border-line bg-transparent px-4 text-sm outline-none transition-colors focus:border-accent"
+        className="mt-3 h-12 w-full rounded-sm border border-line bg-transparent px-4 text-sm outline-none transition-colors focus:border-accent"
       />
     </label>
   );

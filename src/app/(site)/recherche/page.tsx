@@ -106,7 +106,7 @@ export default async function RecherchePage({
                 Saisissez au moins deux caractères.
               </p>
             ) : results.length === 0 ? (
-              <div className="border border-line py-24 text-center">
+              <div className="rounded-lg border border-line py-24 text-center">
                 <p className="font-display text-2xl">
                   Aucun résultat pour « {query} »
                 </p>

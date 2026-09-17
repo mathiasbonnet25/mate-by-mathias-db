@@ -55,7 +55,7 @@ export function DataRightsPanel() {
 
   if (deleted) {
     return (
-      <div className="border border-line p-8">
+      <div className="rounded-lg border border-line p-8">
         <h3 className="font-display text-2xl">Compte supprimé</h3>
         <p className="mt-4 text-sm leading-relaxed text-foreground-muted">
           Vos données identifiantes ont été effacées. Vos factures sont
@@ -68,7 +68,7 @@ export function DataRightsPanel() {
 
   return (
     <div className="space-y-10">
-      <section className="border border-line p-7">
+      <section className="card-soft p-7">
         <h3 className="font-display text-xl">
           Accès et portabilité de mes données
         </h3>
@@ -81,7 +81,7 @@ export function DataRightsPanel() {
           type="button"
           onClick={download}
           disabled={pending}
-          className="mt-6 inline-flex items-center gap-2 border border-line px-6 py-3 text-[11px] uppercase tracking-[0.16em] transition-colors hover:border-accent hover:text-accent disabled:opacity-50"
+          className="mt-6 inline-flex items-center gap-2 rounded-full rounded-full border border-line px-8 py-3 text-[11px] uppercase tracking-[0.16em] transition-colors hover:border-accent hover:text-accent disabled:opacity-50"
         >
           {pending ? (
             <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden />
@@ -92,7 +92,7 @@ export function DataRightsPanel() {
         </button>
       </section>
 
-      <section className="border border-line p-7">
+      <section className="card-soft p-7">
         <h3 className="font-display text-xl">Effacement de mon compte</h3>
         <p className="mt-3 text-sm leading-relaxed text-foreground-muted">
           Vos données identifiantes sont effacées immédiatement et
@@ -105,7 +105,7 @@ export function DataRightsPanel() {
           <button
             type="button"
             onClick={() => setConfirming(true)}
-            className="mt-6 inline-flex items-center gap-2 border border-line px-6 py-3 text-[11px] uppercase tracking-[0.16em] transition-colors hover:border-red-500 hover:text-red-500"
+            className="mt-6 inline-flex items-center gap-2 rounded-full rounded-full border border-line px-8 py-3 text-[11px] uppercase tracking-[0.16em] transition-colors hover:border-red-500 hover:text-red-500"
           >
             <Trash2 className="h-3.5 w-3.5" aria-hidden />
             Supprimer mon compte
@@ -120,7 +120,7 @@ export function DataRightsPanel() {
                 required
                 autoComplete="current-password"
                 onChange={(e) => setPassword(e.target.value)}
-                className="mt-3 h-12 w-full border border-line bg-transparent px-4 text-sm outline-none transition-colors focus:border-accent"
+                className="mt-3 h-12 w-full rounded-sm border border-line bg-transparent px-4 text-sm outline-none transition-colors focus:border-accent"
               />
             </label>
 

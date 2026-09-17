@@ -82,7 +82,7 @@ export async function CatalogView({
           <h2 className="sr-only">Produits</h2>
 
           {result.products.length === 0 ? (
-            <div className="border border-line py-28 text-center">
+            <div className="rounded-lg border border-line py-28 text-center">
               <p className="font-display text-2xl">Aucun produit ne correspond</p>
               <p className="mx-auto mt-3 max-w-md text-sm text-foreground-muted">
                 Essayez d&apos;élargir vos critères, ou composez directement
@@ -90,7 +90,7 @@ export async function CatalogView({
               </p>
               <Link
                 href="/personnalisation"
-                className="mt-8 inline-block border border-line px-7 py-3 text-[11px] uppercase tracking-[0.18em] transition-colors hover:border-accent hover:text-accent"
+                className="mt-8 inline-block rounded-full border border-line px-8 py-3 text-[11px] uppercase tracking-[0.18em] transition-colors hover:border-accent hover:text-accent"
               >
                 Atelier personnalisation
               </Link>

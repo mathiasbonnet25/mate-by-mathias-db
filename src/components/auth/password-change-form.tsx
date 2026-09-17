@@ -27,7 +27,7 @@ export function PasswordChangeForm() {
   }
 
   return (
-    <form onSubmit={onSubmit} className="max-w-sm space-y-5 border border-line p-7">
+    <form onSubmit={onSubmit} className="max-w-sm space-y-5 rounded-lg border border-line p-7">
       <Field
         label="Mot de passe actuel"
         value={form.current}
@@ -92,7 +92,7 @@ function Field({
         autoComplete={autoComplete}
         maxLength={200}
         onChange={(e) => onChange(e.target.value)}
-        className="mt-3 h-12 w-full border border-line bg-transparent px-4 text-sm outline-none transition-colors focus:border-accent"
+        className="mt-3 h-12 w-full rounded-sm border border-line bg-transparent px-4 text-sm outline-none transition-colors focus:border-accent"
       />
     </label>
   );

@@ -49,13 +49,20 @@ export function Header() {
     <>
       <header
         className={cn(
-          "fixed inset-x-0 top-0 z-50 transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]",
-          transparent
-            ? "bg-transparent text-white"
-            : "border-b border-line bg-surface/85 text-foreground backdrop-blur-xl",
+          "fixed inset-x-0 top-0 z-50 transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)]",
+          transparent ? "text-white" : "text-foreground",
+          scrolled && !menuOpen ? "px-3 pt-3 md:px-6 md:pt-4" : "px-0 pt-0",
         )}
       >
-        <div className="container-page flex h-[72px] items-center justify-between gap-6">
+        <div
+          className={cn(
+            "container-page flex items-center justify-between gap-6 transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)]",
+            scrolled && !menuOpen
+              ? "h-16 rounded-full border border-line bg-surface/80 shadow-[var(--shadow-soft)] backdrop-blur-xl"
+              : "h-[76px] rounded-none border border-transparent bg-transparent",
+            menuOpen && "bg-surface",
+          )}
+        >
           <Logo />
 
           <nav className="hidden items-center gap-9 lg:flex" aria-label="Navigation principale">
@@ -75,22 +82,22 @@ export function Header() {
             <Link
               href="/recherche"
               aria-label="Rechercher"
-              className="grid h-10 w-10 place-items-center transition-colors hover:text-accent"
+              className="grid h-10 w-10 place-items-center rounded-full transition-all duration-400 hover:bg-foreground/5 hover:text-accent"
             >
               <Search className="h-[18px] w-[18px]" aria-hidden />
             </Link>
-            <ThemeToggle className="grid h-10 w-10 place-items-center transition-colors hover:text-accent" />
+            <ThemeToggle className="grid h-10 w-10 place-items-center rounded-full transition-all duration-400 hover:bg-foreground/5 hover:text-accent" />
             <Link
               href="/compte"
               aria-label="Mon compte"
-              className="hidden h-10 w-10 place-items-center transition-colors hover:text-accent sm:grid"
+              className="hidden h-10 w-10 place-items-center rounded-full transition-all duration-400 hover:bg-foreground/5 hover:text-accent sm:grid"
             >
               <User className="h-[18px] w-[18px]" aria-hidden />
             </Link>
             <Link
               href="/panier"
               aria-label={`Panier${count > 0 ? ` — ${count} article${count > 1 ? "s" : ""}` : " vide"}`}
-              className="relative grid h-10 w-10 place-items-center transition-colors hover:text-accent"
+              className="relative grid h-10 w-10 place-items-center rounded-full transition-all duration-400 hover:bg-foreground/5 hover:text-accent"
             >
               <ShoppingBag className="h-[18px] w-[18px]" aria-hidden />
               <AnimatePresence>
@@ -113,7 +120,7 @@ export function Header() {
               aria-expanded={menuOpen}
               aria-controls="menu-mobile"
               aria-label={menuOpen ? "Fermer le menu" : "Ouvrir le menu"}
-              className="grid h-10 w-10 place-items-center transition-colors hover:text-accent lg:hidden"
+              className="grid h-10 w-10 place-items-center rounded-full transition-all duration-400 hover:bg-foreground/5 hover:text-accent lg:hidden"
             >
               {menuOpen ? (
                 <X className="h-5 w-5" aria-hidden />
@@ -145,7 +152,7 @@ export function Header() {
                 >
                   <Link
                     href={item.href}
-                    className="block border-b border-line py-5 font-display text-3xl transition-colors hover:text-accent"
+                    className="block rounded-lg px-5 py-5 font-display text-3xl transition-all duration-400 hover:bg-surface-muted hover:text-accent"
                   >
                     {item.label}
                   </Link>

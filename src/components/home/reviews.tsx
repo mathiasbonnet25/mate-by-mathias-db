@@ -34,7 +34,7 @@ export function Reviews({ reviews }: { reviews: ReviewData[] }) {
           <motion.figure
             key={review.id}
             variants={revealItem}
-            className="flex h-full flex-col border border-line p-8 transition-colors duration-500 hover:border-accent/50"
+            className="flex h-full flex-col rounded-lg border border-line p-8 transition-colors duration-500 hover:border-accent/50"
           >
             {/* Le rôle img fait de ce groupe d'étoiles une image porteuse
                 de sens, ce qui rend son étiquette exploitable par les

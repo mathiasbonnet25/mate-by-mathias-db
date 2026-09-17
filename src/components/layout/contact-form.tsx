@@ -58,7 +58,7 @@ export function ContactForm() {
 
   if (sent) {
     return (
-      <div className="border border-line p-10 text-center">
+      <div className="rounded-lg border border-line p-10 text-center">
         <span className="mx-auto grid h-12 w-12 place-items-center rounded-full border border-accent text-accent">
           <Check className="h-5 w-5" aria-hidden />
         </span>
@@ -114,7 +114,7 @@ export function ContactForm() {
               kind: e.target.value as typeof f.kind,
             }))
           }
-          className="mt-3 h-12 w-full border border-line bg-transparent px-4 text-sm outline-none transition-colors focus:border-accent"
+          className="mt-3 h-12 w-full rounded-sm border border-line bg-transparent px-4 text-sm outline-none transition-colors focus:border-accent"
         >
           {SUBJECTS.map((s) => (
             <option key={s.value} value={s.value}>
@@ -135,7 +135,7 @@ export function ContactForm() {
                 dataRight: e.target.value as typeof f.dataRight,
               }))
             }
-            className="mt-3 h-12 w-full border border-line bg-transparent px-4 text-sm outline-none transition-colors focus:border-accent"
+            className="mt-3 h-12 w-full rounded-sm border border-line bg-transparent px-4 text-sm outline-none transition-colors focus:border-accent"
           >
             {DATA_RIGHTS.map((r) => (
               <option key={r.value} value={r.value}>
@@ -168,7 +168,7 @@ export function ContactForm() {
           maxLength={5000}
           value={form.message}
           onChange={(e) => setForm((f) => ({ ...f, message: e.target.value }))}
-          className="mt-3 w-full border border-line bg-transparent p-4 text-sm outline-none transition-colors focus:border-accent"
+          className="mt-3 w-full rounded-sm border border-line bg-transparent p-4 text-sm outline-none transition-colors focus:border-accent"
         />
       </label>
 
@@ -236,7 +236,7 @@ function Field({
         autoComplete={autoComplete}
         maxLength={180}
         onChange={(e) => onChange(e.target.value)}
-        className="mt-3 h-12 w-full border border-line bg-transparent px-4 text-sm outline-none transition-colors focus:border-accent"
+        className="mt-3 h-12 w-full rounded-sm border border-line bg-transparent px-4 text-sm outline-none transition-colors focus:border-accent"
       />
     </label>
   );

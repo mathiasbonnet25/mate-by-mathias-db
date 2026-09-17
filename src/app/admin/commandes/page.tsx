@@ -75,7 +75,7 @@ export default async function AdminOrdersPage({
               name="q"
               defaultValue={query ?? ""}
               placeholder="Numéro, courriel ou suivi"
-              className="mt-2 h-11 w-full border border-line bg-transparent px-4 text-sm outline-none focus:border-accent"
+              className="mt-2 h-11 w-full rounded-sm border border-line bg-transparent px-4 text-sm outline-none focus:border-accent"
             />
           </label>
 
@@ -84,7 +84,7 @@ export default async function AdminOrdersPage({
             <select
               name="statut"
               defaultValue={status ?? ""}
-              className="mt-2 h-11 border border-line bg-transparent px-4 text-sm outline-none focus:border-accent"
+              className="mt-2 h-11 rounded-sm border border-line bg-transparent px-4 text-sm outline-none focus:border-accent"
             >
               <option value="">Tous</option>
               {STATUSES.map((s) => (

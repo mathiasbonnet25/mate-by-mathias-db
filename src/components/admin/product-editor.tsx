@@ -203,7 +203,7 @@ export function ProductEditor({
                 rows={9}
                 value={form.description}
                 onChange={(e) => set("description", e.target.value)}
-                className="mt-2 w-full border border-line bg-transparent p-3 text-sm outline-none focus:border-accent"
+                className="mt-2 w-full rounded-sm border border-line bg-transparent p-3 text-sm outline-none focus:border-accent"
               />
               <span className="mt-1.5 block text-[11px] text-foreground-muted">
                 Un paragraphe par ligne vide.
@@ -225,7 +225,7 @@ export function ProductEditor({
                       ),
                     )
                   }
-                  className="h-11 w-1/3 border border-line bg-transparent px-3 text-sm outline-none focus:border-accent"
+                  className="h-11 w-1/3 rounded-sm border border-line bg-transparent px-3 text-sm outline-none focus:border-accent"
                 />
                 <input
                   value={spec.value}
@@ -238,7 +238,7 @@ export function ProductEditor({
                       ),
                     )
                   }
-                  className="h-11 flex-1 border border-line bg-transparent px-3 text-sm outline-none focus:border-accent"
+                  className="h-11 flex-1 rounded-sm border border-line bg-transparent px-3 text-sm outline-none focus:border-accent"
                 />
                 <button
                   type="button"
@@ -249,7 +249,7 @@ export function ProductEditor({
                       form.specs.filter((_, i) => i !== index),
                     )
                   }
-                  className="grid h-11 w-11 shrink-0 place-items-center border border-line transition-colors hover:border-red-500 hover:text-red-500"
+                  className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-line transition-colors hover:border-red-500 hover:text-red-500"
                 >
                   <Trash2 className="h-3.5 w-3.5" aria-hidden />
                 </button>
@@ -258,7 +258,7 @@ export function ProductEditor({
             <button
               type="button"
               onClick={() => set("specs", [...form.specs, { label: "", value: "" }])}
-              className="inline-flex items-center gap-2 border border-line px-5 py-2.5 text-[11px] uppercase tracking-[0.14em] transition-colors hover:border-accent hover:text-accent"
+              className="inline-flex items-center gap-2 rounded-full border border-line px-6 py-2.5 text-[11px] uppercase tracking-[0.14em] transition-colors hover:border-accent hover:text-accent"
             >
               <Plus className="h-3.5 w-3.5" aria-hidden />
               Ajouter une ligne
@@ -273,7 +273,7 @@ export function ProductEditor({
                 value={form.imageUrls}
                 onChange={(e) => set("imageUrls", e.target.value)}
                 placeholder={"https://…/photo-1.webp\nhttps://…/photo-2.webp"}
-                className="mt-2 w-full border border-line bg-transparent p-3 font-mono text-[12px] outline-none focus:border-accent"
+                className="mt-2 w-full rounded-sm border border-line bg-transparent p-3 font-mono text-[12px] outline-none focus:border-accent"
               />
               <span className="mt-1.5 block text-[11px] text-foreground-muted">
                 Ces visuels s&apos;affichent par défaut. Les photos saisies sur
@@ -297,7 +297,7 @@ export function ProductEditor({
                 maxLength={400}
                 value={form.seoDescription}
                 onChange={(e) => set("seoDescription", e.target.value)}
-                className="mt-2 w-full border border-line bg-transparent p-3 text-sm outline-none focus:border-accent"
+                className="mt-2 w-full rounded-sm border border-line bg-transparent p-3 text-sm outline-none focus:border-accent"
               />
             </label>
           </Section>
@@ -312,7 +312,7 @@ export function ProductEditor({
                 onChange={(e) =>
                   set("status", e.target.value as ProductFormData["status"])
                 }
-                className="mt-2 h-11 w-full border border-line bg-transparent px-3 text-sm outline-none focus:border-accent"
+                className="mt-2 h-11 w-full rounded-sm border border-line bg-transparent px-3 text-sm outline-none focus:border-accent"
               >
                 <option value="DRAFT">Brouillon</option>
                 <option value="PUBLISHED">Publié</option>
@@ -328,7 +328,7 @@ export function ProductEditor({
                   set("universe", e.target.value as ProductFormData["universe"]);
                   set("categoryId", "");
                 }}
-                className="mt-2 h-11 w-full border border-line bg-transparent px-3 text-sm outline-none focus:border-accent"
+                className="mt-2 h-11 w-full rounded-sm border border-line bg-transparent px-3 text-sm outline-none focus:border-accent"
               >
                 <option value="VELOS">Cadres &amp; Vélos</option>
                 <option value="EQUIPEMENT">Vêtements &amp; Accessoires</option>
@@ -340,7 +340,7 @@ export function ProductEditor({
               <select
                 value={form.categoryId}
                 onChange={(e) => set("categoryId", e.target.value)}
-                className="mt-2 h-11 w-full border border-line bg-transparent px-3 text-sm outline-none focus:border-accent"
+                className="mt-2 h-11 w-full rounded-sm border border-line bg-transparent px-3 text-sm outline-none focus:border-accent"
               >
                 <option value="">Aucune</option>
                 {availableCategories.map((c) => (
@@ -356,7 +356,7 @@ export function ProductEditor({
               <select
                 value={form.brandId}
                 onChange={(e) => set("brandId", e.target.value)}
-                className="mt-2 h-11 w-full border border-line bg-transparent px-3 text-sm outline-none focus:border-accent"
+                className="mt-2 h-11 w-full rounded-sm border border-line bg-transparent px-3 text-sm outline-none focus:border-accent"
               >
                 <option value="">Aucune</option>
                 {brands.map((b) => (
@@ -418,7 +418,7 @@ export function ProductEditor({
 
         <div className="mt-5 space-y-4">
           {form.variants.map((variant, index) => (
-            <div key={index} className="border border-line p-5">
+            <div key={index} className="card-soft p-5">
               <div className="mb-4 flex items-center justify-between">
                 <h3 className="text-[11px] uppercase tracking-[0.16em] text-accent">
                   Variante {index + 1}
@@ -467,7 +467,7 @@ export function ProductEditor({
                       onChange={(e) =>
                         setVariant(index, { colorHex: e.target.value })
                       }
-                      className="h-11 w-12 shrink-0 cursor-pointer border border-line bg-transparent"
+                      className="h-11 w-12 shrink-0 cursor-pointer rounded-sm border border-line bg-transparent"
                       aria-label="Choisir la couleur"
                     />
                     <input
@@ -476,7 +476,7 @@ export function ProductEditor({
                       onChange={(e) =>
                         setVariant(index, { colorHex: e.target.value })
                       }
-                      className="h-11 w-full border border-line bg-transparent px-3 font-mono text-[12px] outline-none focus:border-accent"
+                      className="h-11 w-full rounded-sm border border-line bg-transparent px-3 font-mono text-[12px] outline-none focus:border-accent"
                     />
                   </div>
                 </label>
@@ -534,7 +534,7 @@ export function ProductEditor({
                   onChange={(e) =>
                     setVariant(index, { imageUrls: e.target.value })
                   }
-                  className="mt-2 w-full border border-line bg-transparent p-3 font-mono text-[12px] outline-none focus:border-accent"
+                  className="mt-2 w-full rounded-sm border border-line bg-transparent p-3 font-mono text-[12px] outline-none focus:border-accent"
                 />
               </label>
             </div>
@@ -544,7 +544,7 @@ export function ProductEditor({
         <button
           type="button"
           onClick={() => set("variants", [...form.variants, { ...EMPTY_VARIANT }])}
-          className="mt-4 inline-flex items-center gap-2 border border-line px-5 py-2.5 text-[11px] uppercase tracking-[0.14em] transition-colors hover:border-accent hover:text-accent"
+          className="mt-4 inline-flex items-center gap-2 rounded-full border border-line px-6 py-2.5 text-[11px] uppercase tracking-[0.14em] transition-colors hover:border-accent hover:text-accent"
         >
           <Plus className="h-3.5 w-3.5" aria-hidden />
           Ajouter une variante
@@ -585,7 +585,7 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <section className="border border-line bg-surface p-6">
+    <section className="card-soft p-6">
       <h2 className="eyebrow">{title}</h2>
       <div className="mt-5 space-y-4">{children}</div>
     </section>
@@ -616,7 +616,7 @@ function Field({
         required={required}
         maxLength={600}
         onChange={(e) => onChange(e.target.value)}
-        className="mt-2 h-11 w-full border border-line bg-transparent px-3 text-sm outline-none focus:border-accent"
+        className="mt-2 h-11 w-full rounded-sm border border-line bg-transparent px-3 text-sm outline-none focus:border-accent"
       />
       {hint && (
         <span className="mt-1.5 block text-[11px] text-foreground-muted">

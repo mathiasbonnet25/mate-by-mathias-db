@@ -85,7 +85,7 @@ export default async function ComptePage() {
         </div>
 
         {orders.length === 0 ? (
-          <p className="mt-6 border border-line p-8 text-sm text-foreground-muted">
+          <p className="mt-6 rounded-lg border border-line p-8 text-sm text-foreground-muted">
             Vous n&apos;avez pas encore passé commande.
           </p>
         ) : (

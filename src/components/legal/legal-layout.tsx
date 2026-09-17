@@ -51,7 +51,7 @@ export function LegalLayout({
       <article className="legal-prose mt-16 max-w-3xl">{children}</article>
 
       <Reveal>
-        <div className="mt-20 max-w-3xl border border-line p-7 text-[12px] leading-relaxed text-foreground-muted">
+        <div className="mt-20 max-w-3xl rounded-lg border border-line p-7 text-[12px] leading-relaxed text-foreground-muted">
           <p>
             <strong className="text-foreground">Avertissement.</strong> Ce texte
             constitue une base de travail. Il doit être relu, complété et

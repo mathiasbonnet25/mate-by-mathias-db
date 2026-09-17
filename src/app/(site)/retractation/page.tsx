@@ -106,7 +106,7 @@ export default async function RetractationPage() {
           Vous pouvez recopier et compléter le texte suivant. Son usage
           n&apos;est pas obligatoire.
         </p>
-        <div className="border border-line p-6 text-[14px] leading-[1.9]">
+        <div className="rounded-lg border border-line p-6 text-[14px] leading-[1.9]">
           <p>À l&apos;attention de {name}, {address} — {contact}</p>
           <p className="mt-4">
             Je vous notifie par la présente ma rétractation du contrat portant

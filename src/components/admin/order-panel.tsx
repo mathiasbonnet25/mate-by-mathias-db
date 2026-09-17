@@ -69,7 +69,7 @@ export function OrderPanel({
 
   return (
     <div className="space-y-4">
-      <section className="border border-line bg-surface p-6">
+      <section className="card-soft p-6">
         <h2 className="eyebrow">Statut</h2>
 
         <label className="mt-5 block">
@@ -79,7 +79,7 @@ export function OrderPanel({
           <select
             value={nextStatus}
             onChange={(e) => setNextStatus(e.target.value as OrderStatusKey)}
-            className="mt-2 h-11 w-full border border-line bg-transparent px-4 text-sm outline-none focus:border-accent"
+            className="mt-2 h-11 w-full rounded-sm border border-line bg-transparent px-4 text-sm outline-none focus:border-accent"
           >
             {(Object.keys(ORDER_STATUS_LABELS) as OrderStatusKey[]).map((s) => (
               <option key={s} value={s}>
@@ -98,7 +98,7 @@ export function OrderPanel({
             maxLength={500}
             onChange={(e) => setStatusMessage(e.target.value)}
             placeholder="Mise en peinture démarrée"
-            className="mt-2 h-11 w-full border border-line bg-transparent px-4 text-sm outline-none focus:border-accent"
+            className="mt-2 h-11 w-full rounded-sm border border-line bg-transparent px-4 text-sm outline-none focus:border-accent"
           />
         </label>
 
@@ -134,7 +134,7 @@ export function OrderPanel({
         </button>
       </section>
 
-      <section className="border border-line bg-surface p-6">
+      <section className="card-soft p-6">
         <h2 className="eyebrow">Expédition</h2>
 
         <div className="mt-5 space-y-4">
@@ -165,13 +165,13 @@ export function OrderPanel({
               "Informations d'expédition enregistrées.",
             )
           }
-          className="mt-5 inline-flex h-11 items-center gap-2 border border-line px-6 text-[11px] uppercase tracking-[0.16em] transition-colors hover:border-accent hover:text-accent disabled:opacity-50"
+          className="mt-5 inline-flex h-11 items-center gap-2 rounded-full border border-line px-6 text-[11px] uppercase tracking-[0.16em] transition-colors hover:border-accent hover:text-accent disabled:opacity-50"
         >
           Enregistrer
         </button>
       </section>
 
-      <section className="border border-line bg-surface p-6">
+      <section className="card-soft p-6">
         <h2 className="eyebrow">Note interne</h2>
         <p className="mt-2 text-[11px] text-foreground-muted">
           Visible uniquement par l&apos;atelier. N&apos;y consignez aucune
@@ -182,7 +182,7 @@ export function OrderPanel({
           value={note}
           maxLength={3000}
           onChange={(e) => setNote(e.target.value)}
-          className="mt-4 w-full border border-line bg-transparent p-3 text-sm outline-none focus:border-accent"
+          className="mt-4 w-full rounded-sm border border-line bg-transparent p-3 text-sm outline-none focus:border-accent"
         />
         <button
           type="button"
@@ -193,13 +193,13 @@ export function OrderPanel({
               "Note enregistrée.",
             )
           }
-          className="mt-3 inline-flex h-11 items-center gap-2 border border-line px-6 text-[11px] uppercase tracking-[0.16em] transition-colors hover:border-accent hover:text-accent disabled:opacity-50"
+          className="mt-3 inline-flex h-11 items-center gap-2 rounded-full border border-line px-6 text-[11px] uppercase tracking-[0.16em] transition-colors hover:border-accent hover:text-accent disabled:opacity-50"
         >
           Enregistrer
         </button>
       </section>
 
-      <section className="border border-line bg-surface p-6">
+      <section className="card-soft p-6">
         <h2 className="eyebrow">Facture</h2>
         {hasInvoice ? (
           <p className="mt-4 text-[13px] text-foreground-muted">
@@ -217,7 +217,7 @@ export function OrderPanel({
               type="button"
               disabled={pending || !canInvoice}
               onClick={() => run(() => issueInvoice(orderId), "Facture émise.")}
-              className="mt-4 inline-flex h-11 items-center gap-2 border border-line px-6 text-[11px] uppercase tracking-[0.16em] transition-colors hover:border-accent hover:text-accent disabled:opacity-40"
+              className="mt-4 inline-flex h-11 items-center gap-2 rounded-full border border-line px-6 text-[11px] uppercase tracking-[0.16em] transition-colors hover:border-accent hover:text-accent disabled:opacity-40"
             >
               <FileText className="h-3.5 w-3.5" aria-hidden />
               Émettre la facture
@@ -228,7 +228,7 @@ export function OrderPanel({
         <button
           type="button"
           onClick={() => window.print()}
-          className="ml-2 mt-4 inline-flex h-11 items-center gap-2 border border-line px-6 text-[11px] uppercase tracking-[0.16em] transition-colors hover:border-accent hover:text-accent"
+          className="ml-2 mt-4 inline-flex h-11 items-center gap-2 rounded-full border border-line px-6 text-[11px] uppercase tracking-[0.16em] transition-colors hover:border-accent hover:text-accent"
         >
           <Printer className="h-3.5 w-3.5" aria-hidden />
           Imprimer
@@ -272,7 +272,7 @@ function Field({
         placeholder={placeholder}
         maxLength={500}
         onChange={(e) => onChange(e.target.value)}
-        className="mt-2 h-11 w-full border border-line bg-transparent px-4 text-sm outline-none focus:border-accent"
+        className="mt-2 h-11 w-full rounded-sm border border-line bg-transparent px-4 text-sm outline-none focus:border-accent"
       />
     </label>
   );

@@ -43,6 +43,12 @@ export function Hero({
       className="relative h-[100svh] min-h-[560px] w-full overflow-hidden bg-ink-950"
       aria-label="Présentation"
     >
+      {/* Arc de raccord avec la section suivante, dessiné dans la couleur
+          de fond du site. Purement décoratif. */}
+      <div
+        className="pointer-events-none absolute inset-x-[-6%] bottom-[-1px] z-10 h-16 rounded-[50%_50%_0_0/100%_100%_0_0] bg-surface md:h-24"
+        aria-hidden
+      />
       <motion.div style={{ scale }} className="absolute inset-0">
         {videoUrl ? (
           <video
@@ -94,7 +100,7 @@ export function Hero({
 
         <a
           href="#presentation"
-          className="hero-rise hero-delay-4 group mt-14 inline-flex h-14 items-center gap-3 border border-white/35 px-11 text-[11px] uppercase tracking-[0.22em] transition-all duration-500 hover:border-gold-300 hover:bg-gold-300 hover:text-ink-950"
+          className="hero-rise hero-delay-4 group mt-14 inline-flex h-14 items-center gap-3 rounded-full border border-white/35 px-12 text-[11px] uppercase tracking-[0.22em] backdrop-blur-sm transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:border-gold-300 hover:bg-gold-300 hover:text-ink-950 active:scale-[0.97]"
         >
           {cta}
           <ChevronDown

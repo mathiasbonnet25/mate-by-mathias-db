@@ -80,7 +80,7 @@ export function TwoFactorSetup({ enabled }: { enabled: boolean }) {
           Double authentification activée
         </p>
 
-        <div className="mt-6 flex gap-3 border border-line p-4">
+        <div className="mt-6 flex gap-3 rounded-lg border border-line p-4">
           <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-accent" aria-hidden />
           <p className="text-[12px] leading-relaxed">
             Conservez ces codes de secours en lieu sûr. Ils permettent
@@ -92,7 +92,7 @@ export function TwoFactorSetup({ enabled }: { enabled: boolean }) {
 
         <ul className="mt-5 grid grid-cols-2 gap-2 font-mono text-sm">
           {recoveryCodes.map((code) => (
-            <li key={code} className="border border-line p-3 text-center">
+            <li key={code} className="rounded-lg border border-line p-3 text-center">
               {code}
             </li>
           ))}
@@ -105,7 +105,7 @@ export function TwoFactorSetup({ enabled }: { enabled: boolean }) {
             setCopied(true);
             setTimeout(() => setCopied(false), 2500);
           }}
-          className="mt-5 inline-flex items-center gap-2 border border-line px-5 py-2.5 text-[11px] uppercase tracking-[0.14em] transition-colors hover:border-accent hover:text-accent"
+          className="mt-5 inline-flex items-center gap-2 rounded-full border border-line px-6 py-2.5 text-[11px] uppercase tracking-[0.14em] transition-colors hover:border-accent hover:text-accent"
         >
           {copied ? (
             <Check className="h-3.5 w-3.5" aria-hidden />
@@ -128,7 +128,7 @@ export function TwoFactorSetup({ enabled }: { enabled: boolean }) {
 
   if (isEnabled) {
     return (
-      <div className="border border-line p-7">
+      <div className="card-soft p-7">
         <p className="flex items-center gap-2 text-[11px] uppercase tracking-[0.16em] text-accent">
           <ShieldCheck className="h-3.5 w-3.5" aria-hidden />
           Activée
@@ -149,7 +149,7 @@ export function TwoFactorSetup({ enabled }: { enabled: boolean }) {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               autoComplete="current-password"
-              className="mt-3 h-12 w-full border border-line bg-transparent px-4 text-sm outline-none transition-colors focus:border-accent"
+              className="mt-3 h-12 w-full rounded-sm border border-line bg-transparent px-4 text-sm outline-none transition-colors focus:border-accent"
             />
           </label>
 
@@ -162,7 +162,7 @@ export function TwoFactorSetup({ enabled }: { enabled: boolean }) {
           <button
             type="submit"
             disabled={pending || !password}
-            className="mt-4 inline-flex items-center gap-2 border border-line px-6 py-3 text-[11px] uppercase tracking-[0.14em] transition-colors hover:border-red-500 hover:text-red-500 disabled:opacity-40"
+            className="mt-4 inline-flex items-center gap-2 rounded-full rounded-full border border-line px-8 py-3 text-[11px] uppercase tracking-[0.14em] transition-colors hover:border-red-500 hover:text-red-500 disabled:opacity-40"
           >
             {pending && <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden />}
             Désactiver la double authentification
@@ -173,7 +173,7 @@ export function TwoFactorSetup({ enabled }: { enabled: boolean }) {
   }
 
   return (
-    <div className="border border-line p-7">
+    <div className="card-soft p-7">
       <p className="text-sm leading-relaxed text-foreground-muted">
         La double authentification ajoute un code à usage unique, généré par
         une application sur votre téléphone. Même en cas de vol de votre mot de
@@ -200,7 +200,7 @@ export function TwoFactorSetup({ enabled }: { enabled: boolean }) {
       ) : (
         <form onSubmit={confirm} className="mt-7">
           <p className="eyebrow">1. Scannez ce code</p>
-          <div className="mt-4 inline-block border border-line bg-white p-3">
+          <div className="mt-4 inline-block rounded-lg border border-line bg-white p-3">
             <Image
               src={qr}
               alt="QR code de configuration de la double authentification"
@@ -224,7 +224,7 @@ export function TwoFactorSetup({ enabled }: { enabled: boolean }) {
               maxLength={6}
               value={token}
               onChange={(e) => setToken(e.target.value.replace(/\D/g, ""))}
-              className="mt-3 h-12 w-full border border-line bg-transparent px-4 text-center text-lg tracking-[0.5em] outline-none transition-colors focus:border-accent"
+              className="mt-3 h-12 w-full rounded-sm border border-line bg-transparent px-4 text-center text-lg tracking-[0.5em] outline-none transition-colors focus:border-accent"
             />
           </label>
 

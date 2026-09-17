@@ -14,6 +14,12 @@ export function Section({
   action,
   children,
   muted = false,
+  /**
+   * Termine la section par un arc, dans la couleur de la section suivante.
+   * À n'utiliser que lorsque le fond change réellement : une courbe entre
+   * deux blocs de même couleur ne se verrait pas et coûterait un calcul.
+   */
+  curve,
   className,
 }: {
   id?: string;
@@ -23,14 +29,17 @@ export function Section({
   action?: ReactNode;
   children: ReactNode;
   muted?: boolean;
+  curve?: "surface" | "muted";
   className?: string;
 }) {
   return (
     <section
       id={id}
       className={cn(
-        "py-20 md:py-28 lg:py-[var(--spacing-section)]",
+        "relative py-20 md:py-28 lg:py-[var(--spacing-section)]",
         muted && "bg-surface-muted",
+        curve && "curve-bottom",
+        curve === "muted" && "curve-bottom-muted",
         className,
       )}
     >

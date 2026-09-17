@@ -47,7 +47,7 @@ export function ProductCard({
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
       >
-        <div className="relative aspect-[4/5] overflow-hidden bg-surface-muted">
+        <div className="relative aspect-[4/5] overflow-hidden rounded-xl bg-surface-muted shadow-[var(--shadow-soft)] transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:-translate-y-1.5 group-hover:shadow-[var(--shadow-lifted)]">
           {product.imageUrl ? (
             <>
               <Image
@@ -92,15 +92,15 @@ export function ProductCard({
               </span>
             )}
             {!product.inStock && !product.isMadeToOrder && (
-              <span className="border border-line bg-surface/90 px-2.5 py-1 text-[9px] uppercase tracking-[0.18em]">
+              <span className="rounded-full border border-line bg-surface/90 px-2.5 py-1 text-[9px] uppercase tracking-[0.18em]">
                 Épuisé
               </span>
             )}
           </div>
         </div>
 
-        <div className="pt-5">
-          <h3 className="font-display text-lg leading-snug transition-colors group-hover:text-accent">
+        <div className="px-1 pt-6">
+          <h3 className="font-display text-lg leading-snug transition-colors duration-500 group-hover:text-accent">
             {product.name}
           </h3>
           {product.tagline && (
