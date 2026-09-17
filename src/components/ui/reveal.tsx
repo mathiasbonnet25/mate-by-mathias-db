@@ -126,6 +126,30 @@ export const revealItem: Variants = {
   },
 };
 
+/**
+ * Enfant animé d'un RevealGroup.
+ *
+ * `revealItem` est un objet de variantes, pas un composant : il ne peut
+ * pas être utilisé tel quel depuis une page rendue côté serveur. Ce
+ * composant fait le pont.
+ */
+export function RevealItem({
+  children,
+  className,
+  as = "div",
+}: {
+  children: ReactNode;
+  className?: string;
+  as?: "div" | "li" | "article";
+}) {
+  const MotionTag = motion[as];
+  return (
+    <MotionTag className={className} variants={revealItem}>
+      {children}
+    </MotionTag>
+  );
+}
+
 /** Apparition latérale, pour les compositions asymétriques. */
 export const revealFromSide = (cote: "gauche" | "droite"): Variants => ({
   hidden: { opacity: 0, x: cote === "gauche" ? -56 : 56 },

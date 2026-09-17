@@ -62,10 +62,10 @@ export default async function AdminDashboard() {
           href="/admin/devis"
         />
         <Stat
-          label="Visiteurs uniques"
-          value={String(data.uniqueVisitors)}
-          hint={`${data.pageViews} pages vues`}
-          href="/admin/statistiques"
+          label="Réclamations ouvertes"
+          value={String(data.openClaims)}
+          hint="Réponse motivée sous 15 jours"
+          href="/admin/reclamations"
         />
       </div>
 
@@ -86,6 +86,12 @@ export default async function AdminDashboard() {
           value={String(data.lowStock.length)}
           hint="Variantes à 3 unités ou moins"
           href="/admin/produits"
+        />
+        <Stat
+          label="Visiteurs uniques"
+          value={String(data.uniqueVisitors)}
+          hint={`${data.pageViews} pages vues`}
+          href="/admin/statistiques"
         />
       </div>
 

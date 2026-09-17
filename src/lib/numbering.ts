@@ -9,7 +9,7 @@ import { prisma } from "@/lib/prisma";
  * est donc incrémenté dans une transaction, à partir du dernier numéro
  * réellement présent en base.
  */
-type Sequence = "quote" | "order" | "invoice";
+type Sequence = "quote" | "order" | "invoice" | "claim";
 
 export async function nextSequenceNumber(
   sequence: Sequence,
@@ -35,8 +35,15 @@ export async function nextSequenceNumber(
         select: { number: true },
       });
       last = row?.number ?? null;
-    } else {
+    } else if (sequence === "invoice") {
       const row = await tx.invoice.findFirst({
+        where: { number: { startsWith: pattern } },
+        orderBy: { number: "desc" },
+        select: { number: true },
+      });
+      last = row?.number ?? null;
+    } else {
+      const row = await tx.claim.findFirst({
         where: { number: { startsWith: pattern } },
         orderBy: { number: "desc" },
         select: { number: true },

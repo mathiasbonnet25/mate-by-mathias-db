@@ -29,6 +29,7 @@ export async function getDashboardData(days = 30) {
     previousRevenue,
     orderCount,
     pendingQuotes,
+    openClaims,
     visitors,
     topProducts,
     dailyOrders,
@@ -49,6 +50,9 @@ export async function getDashboardData(days = 30) {
     }),
     prisma.order.count({ where: { createdAt: { gte: since } } }),
     prisma.quote.count({ where: { status: { in: ["NEW", "IN_REVIEW"] } } }),
+    prisma.claim.count({
+      where: { status: { in: ["RECEIVED", "IN_REVIEW", "AWAITING"] } },
+    }),
     prisma.pageView.findMany({
       where: { createdAt: { gte: since } },
       select: { visitorHash: true },
@@ -111,6 +115,7 @@ export async function getDashboardData(days = 30) {
     orderCount,
     paidOrders,
     pendingQuotes,
+    openClaims,
     uniqueVisitors: new Set(visitors.map((v) => v.visitorHash)).size,
     pageViews: visitors.length,
     averageBasketCents: paidOrders > 0 ? Math.round(revenueCents / paidOrders) : 0,

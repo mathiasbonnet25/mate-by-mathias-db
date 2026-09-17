@@ -60,6 +60,7 @@ model User {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  claims    Claim[]
 
   @@index([role])
 }
@@ -490,6 +491,7 @@ model Order {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  claims    Claim[]
 
   @@index([status])
   @@index([userId])
@@ -803,6 +805,90 @@ model ContactMessage {
   status      String   @default("NEW")
   isComplaint Boolean  @default(false)
   createdAt   DateTime @default(now())
+}
+
+// ---------------------------------------------------------------------------
+// Réclamations
+// ---------------------------------------------------------------------------
+
+enum ClaimReason {
+  DAMAGED // Produit endommagé à la réception
+  NOT_CONFORM // Produit non conforme à la commande
+  MISSING // Article manquant
+  DELAY // Retard de livraison
+  QUALITY // Défaut constaté à l'usage
+  WITHDRAWAL // Demande de rétractation
+  OTHER
+}
+
+enum ClaimStatus {
+  RECEIVED // Reçue, accusé de réception envoyé
+  IN_REVIEW // À l'étude par l'atelier
+  AWAITING // En attente d'un élément du client
+  RESOLVED // Résolue
+  REJECTED // Rejetée, motif consigné
+}
+
+/// Réclamation client, suivie de bout en bout depuis l'administration.
+model Claim {
+  id     String      @id @default(cuid())
+  /// Numéro de dossier communiqué au client, ex. REC-2026-00042.
+  number String      @unique
+  status ClaimStatus @default(RECEIVED)
+  reason ClaimReason
+
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  firstName String
+  lastName  String
+  email     String
+  phone     String?
+
+  orderId     String?
+  order       Order?  @relation(fields: [orderId], references: [id], onDelete: SetNull)
+  /// Numéro saisi par le client, conservé même si la commande est
+  /// introuvable : il permet de retrouver le dossier manuellement.
+  orderNumber String?
+
+  description String @db.Text
+  /// Photos et documents fournis : [{ url, fileName, mimeType }]
+  attachments Json?
+
+  internalNote String? @db.Text
+  resolution   String? @db.Text
+
+  /// Engagement d'accusé de réception sous 48 heures ouvrées.
+  acknowledgedAt DateTime?
+  resolvedAt     DateTime?
+
+  messages ClaimMessage[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status, createdAt])
+  @@index([email])
+  @@index([orderId])
+}
+
+/// Un échange dans le fil d'une réclamation.
+model ClaimMessage {
+  id      String @id @default(cuid())
+  claimId String
+  claim   Claim  @relation(fields: [claimId], references: [id], onDelete: Cascade)
+
+  /// CLIENT ou ATELIER
+  author      String
+  authorName  String?
+  body        String  @db.Text
+  attachments Json?
+  /// Note interne : jamais affichée au client.
+  isInternal  Boolean @default(false)
+
+  createdAt DateTime @default(now())
+
+  @@index([claimId, createdAt])
 }
 
 // ---------------------------------------------------------------------------

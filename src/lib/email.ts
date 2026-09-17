@@ -152,6 +152,33 @@ export async function sendNewsletterConfirmation(params: {
   });
 }
 
+export async function sendClaimAcknowledgement(params: {
+  to: string;
+  firstName: string;
+  number: string;
+}): Promise<void> {
+  await send({
+    to: params.to,
+    subject: `Votre réclamation ${params.number} est enregistrée`,
+    html: layout(
+      "Nous avons bien reçu votre réclamation",
+      [
+        paragraph(`Bonjour ${params.firstName},`),
+        paragraph(
+          `Votre demande est enregistrée sous le numéro de dossier ${params.number}. Conservez-le : il nous permet de retrouver votre dossier à chaque échange.`,
+        ),
+        paragraph(
+          "Nous l'examinons et revenons vers vous sous quinze jours au plus tard. Si nous avons besoin d'un élément complémentaire, nous vous le demanderons directement.",
+        ),
+        paragraph(
+          "Vous pouvez répondre à ce message pour ajouter des photos ou des documents à votre dossier.",
+        ),
+        paragraph("Mathias"),
+      ].join(""),
+    ),
+  });
+}
+
 export async function notifyWorkshop(params: {
   subject: string;
   body: string;

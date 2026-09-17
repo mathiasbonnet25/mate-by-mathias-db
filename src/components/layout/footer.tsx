@@ -9,7 +9,7 @@ const SHOP_LINKS = [
   { label: "Cadres & Vélos", href: "/velos" },
   { label: "Vêtements & Accessoires", href: "/equipement" },
   { label: "Atelier personnalisation", href: "/personnalisation" },
-  { label: "Livraison & retours", href: "/livraison" },
+  { label: "Comment ça marche", href: "/comment-ca-marche" },
 ];
 
 const HOUSE_LINKS = [
@@ -19,12 +19,28 @@ const HOUSE_LINKS = [
   { label: "Mon compte", href: "/compte" },
 ];
 
+/**
+ * Aide et documents juridiques.
+ *
+ * Les cinq liens en vrac de la version précédente sont regroupés sous une
+ * rubrique qui mène à la page d'ensemble : la personne qui cherche
+ * « comment je me fais rembourser » n'a pas à deviner que la réponse se
+ * trouve dans les conditions générales de vente.
+ */
+const HELP_LINKS = [
+  { label: "Livraison", href: "/livraison" },
+  { label: "Retours et remboursements", href: "/retours-remboursements" },
+  { label: "Garanties et SAV", href: "/garanties" },
+  { label: "Réclamations et litiges", href: "/reclamations" },
+  { label: "Informations légales", href: "/informations-legales" },
+];
+
 const LEGAL_LINKS = [
   { label: "Mentions légales", href: "/mentions-legales" },
-  { label: "Conditions générales de vente", href: "/cgv" },
-  { label: "Politique de confidentialité", href: "/confidentialite" },
-  { label: "Politique de cookies", href: "/cookies" },
-  { label: "Droit de rétractation", href: "/retractation" },
+  { label: "CGV", href: "/cgv" },
+  { label: "Confidentialité", href: "/confidentialite" },
+  { label: "Cookies", href: "/cookies" },
+  { label: "Rétractation", href: "/retractation" },
 ];
 
 const SOCIALS = [
@@ -37,7 +53,7 @@ export function Footer() {
   return (
     <footer className="border-t border-line bg-surface-muted">
       <div className="container-page py-20">
-        <div className="grid gap-14 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
+        <div className="grid gap-14 lg:grid-cols-[1.3fr_1fr_1fr_1fr_1.1fr]">
           <div className="max-w-sm">
             <Logo />
             <p className="mt-6 text-sm leading-relaxed text-foreground-muted">
@@ -69,6 +85,7 @@ export function Footer() {
 
           <FooterColumn title="Boutique" links={SHOP_LINKS} />
           <FooterColumn title="La maison" links={HOUSE_LINKS} />
+          <FooterColumn title="Aide & droits" links={HELP_LINKS} />
 
           <div>
             <h2 className="eyebrow">Newsletter</h2>
