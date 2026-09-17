@@ -15,8 +15,14 @@ const csp = [
   "img-src 'self' data: blob: https:",
   "media-src 'self' https: blob:",
   "connect-src 'self' https://api.stripe.com https://www.paypal.com https://www.sandbox.paypal.com",
-  "frame-src https://js.stripe.com https://hooks.stripe.com https://www.paypal.com https://www.sandbox.paypal.com",
-  "frame-ancestors 'none'",
+  // 'self' est nécessaire à l'aperçu responsive de l'administration, qui
+  // affiche le site dans un cadre de même origine.
+  "frame-src 'self' https://js.stripe.com https://hooks.stripe.com https://www.paypal.com https://www.sandbox.paypal.com",
+  // 'self' plutôt que 'none' : un site tiers ne peut toujours pas nous
+  // encadrer — c'est ce qui protège du détournement de clic — mais
+  // l'aperçu responsive de l'administration, qui affiche le site dans un
+  // cadre de même origine, fonctionne.
+  "frame-ancestors 'self'",
   "base-uri 'self'",
   "form-action 'self'",
   "object-src 'none'",
@@ -25,7 +31,8 @@ const csp = [
 
 const securityHeaders = [
   { key: "Content-Security-Policy", value: csp },
-  { key: "X-Frame-Options", value: "DENY" },
+  // Équivalent hérité de frame-ancestors, pour les navigateurs anciens.
+  { key: "X-Frame-Options", value: "SAMEORIGIN" },
   { key: "X-Content-Type-Options", value: "nosniff" },
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
   { key: "X-DNS-Prefetch-Control", value: "on" },
