@@ -477,6 +477,11 @@ model Order {
   /// après paiement, sans toucher à ceux des autres visiteurs.
   cartToken String?
 
+  /// Jeton d'accès à la page de confirmation. Le numéro de commande étant
+  /// séquentiel, il serait énumérable : ce jeton aléatoire est la seule
+  /// preuve d'accès acceptée pour une commande passée sans compte.
+  accessToken String @unique @default(cuid())
+
   items    OrderItem[]
   payments Payment[]
   invoices Invoice[]

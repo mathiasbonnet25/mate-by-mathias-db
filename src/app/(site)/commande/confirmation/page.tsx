@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Check, Clock } from "lucide-react";
 
 import { prisma } from "@/lib/prisma";
+import { auth } from "@/lib/auth";
 import { formatPrice } from "@/lib/utils";
 import { buildMetadata } from "@/lib/seo";
 
@@ -20,28 +21,39 @@ export const metadata = buildMetadata({
  * Elle affiche l'état réel de la commande en base. L'encaissement n'est
  * considéré comme acquis qu'après réception du webhook du prestataire : un
  * simple retour de navigateur ne vaut pas paiement.
+ *
+ * Accès : le numéro de commande étant séquentiel, il serait énumérable.
+ * La commande n'est donc affichée que sur présentation du jeton remis à la
+ * fin du paiement, ou au client connecté qui en est propriétaire.
  */
 export default async function ConfirmationPage({
   searchParams,
 }: {
-  searchParams: Promise<{ commande?: string; paiement?: string }>;
+  searchParams: Promise<{ commande?: string; jeton?: string; paiement?: string }>;
 }) {
-  const { commande, paiement } = await searchParams;
+  const { commande, jeton, paiement } = await searchParams;
+  const session = await auth();
 
-  const order = commande
-    ? await prisma.order
-        .findUnique({
-          where: { number: commande },
-          select: {
-            number: true,
-            email: true,
-            totalCents: true,
-            paymentStatus: true,
-            createdAt: true,
-          },
-        })
-        .catch(() => null)
-    : null;
+  const order =
+    commande && (jeton || session?.user?.id)
+      ? await prisma.order
+          .findFirst({
+            where: {
+              number: commande,
+              OR: [
+                ...(jeton ? [{ accessToken: jeton }] : []),
+                ...(session?.user?.id ? [{ userId: session.user.id }] : []),
+              ],
+            },
+            select: {
+              number: true,
+              totalCents: true,
+              paymentStatus: true,
+              createdAt: true,
+            },
+          })
+          .catch(() => null)
+      : null;
 
   const paid = order?.paymentStatus === "PAID";
 

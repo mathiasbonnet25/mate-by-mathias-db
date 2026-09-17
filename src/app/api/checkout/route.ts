@@ -92,7 +92,7 @@ export async function POST(request: Request) {
       // attente de paiement : on renvoie vers la page de suivi.
       return NextResponse.json({
         orderNumber: order.number,
-        url: `/commande/confirmation?commande=${order.number}&paiement=indisponible`,
+        url: `/commande/confirmation?commande=${order.number}&jeton=${order.accessToken}&paiement=indisponible`,
       });
     }
 
@@ -144,7 +144,7 @@ export async function POST(request: Request) {
           ]
         : undefined,
       metadata: { orderId: order.id, orderNumber: order.number },
-      success_url: `${siteUrl}/commande/confirmation?commande=${order.number}`,
+      success_url: `${siteUrl}/commande/confirmation?commande=${order.number}&jeton=${order.accessToken}`,
       cancel_url: `${siteUrl}/panier?paiement=annule`,
     });
 
