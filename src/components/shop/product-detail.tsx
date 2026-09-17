@@ -7,6 +7,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Check, Loader2, Minus, Plus, ShieldCheck, Truck, Undo2 } from "lucide-react";
 
 import { ProductGallery, type GalleryImage } from "@/components/shop/product-gallery";
+import { FavoriteButton } from "@/components/shop/favorite-button";
 import { useCart } from "@/components/shop/cart-provider";
 import { formatPrice } from "@/lib/utils";
 
@@ -332,14 +333,18 @@ export function ProductDetail({ product }: { product: ProductDetailData }) {
           </button>
         </div>
 
-        <button
-          type="button"
-          disabled={!available || pending}
-          onClick={() => handleAdd("checkout")}
-          className="mt-3 h-12 w-full rounded-full border border-line text-[11px] uppercase tracking-[0.18em] transition-colors hover:border-accent hover:text-accent disabled:cursor-not-allowed disabled:opacity-40"
-        >
-          Acheter maintenant
-        </button>
+        <div className="mt-3 flex gap-3">
+          <button
+            type="button"
+            disabled={!available || pending}
+            onClick={() => handleAdd("checkout")}
+            className="h-12 flex-1 rounded-full border border-line text-[11px] uppercase tracking-[0.18em] transition-colors hover:border-accent hover:text-accent disabled:cursor-not-allowed disabled:opacity-40"
+          >
+            Acheter maintenant
+          </button>
+
+          <FavoriteButton productId={product.id} />
+        </div>
 
         {error && (
           <p className="mt-3 text-[12px] text-red-500" role="alert">
