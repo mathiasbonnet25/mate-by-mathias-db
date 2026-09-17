@@ -310,7 +310,7 @@ export function FilterToolbar({
               <button
                 type="button"
                 onClick={() => setDrawerOpen(false)}
-                className="mt-10 h-12 w-full bg-accent text-[11px] uppercase tracking-[0.18em] text-accent-contrast"
+                className="rounded-full mt-10 h-12 w-full bg-accent text-[11px] uppercase tracking-[0.18em] text-accent-contrast"
               >
                 Voir les {total} produits
               </button>

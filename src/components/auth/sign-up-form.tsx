@@ -167,7 +167,7 @@ export function SignUpForm() {
       <button
         type="submit"
         disabled={pending}
-        className="flex h-12 w-full items-center justify-center gap-2 bg-foreground text-[11px] uppercase tracking-[0.18em] text-surface transition-all hover:bg-accent hover:text-accent-contrast disabled:opacity-50"
+        className="rounded-full flex h-12 w-full items-center justify-center gap-2 bg-foreground text-[11px] uppercase tracking-[0.18em] text-surface transition-all hover:bg-accent hover:text-accent-contrast disabled:opacity-50"
       >
         {pending && <Loader2 className="h-4 w-4 animate-spin" aria-hidden />}
         Créer mon compte

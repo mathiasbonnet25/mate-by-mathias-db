@@ -97,7 +97,7 @@ export default async function AdminOrdersPage({
 
           <button
             type="submit"
-            className="h-11 bg-foreground px-6 text-[11px] uppercase tracking-[0.16em] text-surface transition-colors hover:bg-accent hover:text-accent-contrast"
+            className="rounded-full h-11 bg-foreground px-6 text-[11px] uppercase tracking-[0.16em] text-surface transition-colors hover:bg-accent hover:text-accent-contrast"
           >
             Filtrer
           </button>

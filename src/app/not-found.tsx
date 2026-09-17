@@ -22,7 +22,7 @@ export default function NotFound() {
         <div className="mt-11 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <Link
             href="/"
-            className="h-12 bg-foreground px-8 text-[11px] uppercase leading-[3rem] tracking-[0.18em] text-surface transition-colors hover:bg-accent hover:text-accent-contrast"
+            className="rounded-full h-12 bg-foreground px-8 text-[11px] uppercase leading-[3rem] tracking-[0.18em] text-surface transition-colors hover:bg-accent hover:text-accent-contrast"
           >
             Retour à l&apos;accueil
           </Link>

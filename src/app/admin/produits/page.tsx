@@ -65,7 +65,7 @@ export default async function AdminProductsPage({
         action={
           <Link
             href="/admin/produits/nouveau"
-            className="inline-flex h-11 items-center gap-2 bg-foreground px-6 text-[11px] uppercase tracking-[0.16em] text-surface transition-colors hover:bg-accent hover:text-accent-contrast"
+            className="rounded-full inline-flex h-11 items-center gap-2 bg-foreground px-6 text-[11px] uppercase tracking-[0.16em] text-surface transition-colors hover:bg-accent hover:text-accent-contrast"
           >
             <Plus className="h-3.5 w-3.5" aria-hidden />
             Nouveau produit
@@ -116,7 +116,7 @@ export default async function AdminProductsPage({
 
           <button
             type="submit"
-            className="h-11 bg-foreground px-6 text-[11px] uppercase tracking-[0.16em] text-surface transition-colors hover:bg-accent hover:text-accent-contrast"
+            className="rounded-full h-11 bg-foreground px-6 text-[11px] uppercase tracking-[0.16em] text-surface transition-colors hover:bg-accent hover:text-accent-contrast"
           >
             Filtrer
           </button>

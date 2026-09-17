@@ -191,7 +191,7 @@ export function TwoFactorSetup({ enabled }: { enabled: boolean }) {
             type="button"
             onClick={begin}
             disabled={pending}
-            className="mt-6 inline-flex items-center gap-2 bg-foreground px-7 py-3 text-[11px] uppercase tracking-[0.16em] text-surface transition-all hover:bg-accent hover:text-accent-contrast disabled:opacity-50"
+            className="rounded-full mt-6 inline-flex items-center gap-2 bg-foreground px-7 py-3 text-[11px] uppercase tracking-[0.16em] text-surface transition-all hover:bg-accent hover:text-accent-contrast disabled:opacity-50"
           >
             {pending && <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden />}
             Activer
@@ -237,7 +237,7 @@ export function TwoFactorSetup({ enabled }: { enabled: boolean }) {
           <button
             type="submit"
             disabled={pending || token.length !== 6}
-            className="mt-5 inline-flex items-center gap-2 bg-accent px-7 py-3 text-[11px] uppercase tracking-[0.16em] text-accent-contrast transition-all hover:brightness-110 disabled:opacity-40"
+            className="rounded-full mt-5 inline-flex items-center gap-2 bg-accent px-7 py-3 text-[11px] uppercase tracking-[0.16em] text-accent-contrast transition-all hover:brightness-110 disabled:opacity-40"
           >
             {pending && <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden />}
             Confirmer

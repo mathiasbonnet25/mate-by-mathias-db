@@ -133,7 +133,7 @@ export default async function CookiesPage() {
           facilement que vous l&apos;avez donnée :
         </p>
         <p>
-          <CookiePreferencesButton className="inline-flex h-12 items-center border border-accent px-7 text-[11px] uppercase tracking-[0.18em] text-accent transition-colors hover:bg-accent hover:text-accent-contrast" />
+          <CookiePreferencesButton className="rounded-full inline-flex h-12 items-center border border-accent px-7 text-[11px] uppercase tracking-[0.18em] text-accent transition-colors hover:bg-accent hover:text-accent-contrast" />
         </p>
         <p>
           Vous pouvez également configurer votre navigateur pour refuser ou

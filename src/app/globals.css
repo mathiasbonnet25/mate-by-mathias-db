@@ -488,3 +488,79 @@
     overflow: hidden;
   }
 }
+
+@layer components {
+  /**
+   * Entrée de page.
+   *
+   * Un simple fondu, court. La règle « prefers-reduced-motion » de la
+   * couche de base ramène la durée à quasi zéro pour qui a désactivé les
+   * animations — ce qui fonctionne ici, contrairement aux animations
+   * Framer Motion, puisqu'il s'agit d'une animation CSS.
+   */
+  @keyframes page-enter {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  .page-enter {
+    animation: page-enter 0.32s ease both;
+  }
+
+  /**
+   * Entrée du logo, au tout premier affichage de la session.
+   *
+   * Le monogramme se dessine, puis le nom apparaît. L'effet ne se joue
+   * qu'une fois : le revoir à chaque navigation deviendrait vite pénible.
+   */
+  @keyframes logo-draw {
+    from {
+      stroke-dashoffset: 120;
+      opacity: 0;
+    }
+    to {
+      stroke-dashoffset: 0;
+      opacity: 1;
+    }
+  }
+
+  @keyframes logo-ring {
+    from {
+      transform: rotate(-120deg) scale(0.7);
+      opacity: 0;
+    }
+    to {
+      transform: rotate(0deg) scale(1);
+      opacity: 0.5;
+    }
+  }
+
+  @keyframes logo-word {
+    from {
+      opacity: 0;
+      transform: translateX(-8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  .logo-intro .logo-mark {
+    stroke-dasharray: 120;
+    animation: logo-draw 1.1s cubic-bezier(0.32, 0.72, 0, 1) 0.15s both;
+  }
+
+  .logo-intro .logo-ring {
+    transform-origin: center;
+    animation: logo-ring 1.2s cubic-bezier(0.32, 0.72, 0, 1) both;
+  }
+
+  .logo-intro .logo-word {
+    animation: logo-word 0.7s cubic-bezier(0.32, 0.72, 0, 1) 0.55s both;
+  }
+}

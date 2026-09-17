@@ -17,6 +17,7 @@ import {
 
 import { auth, signOut } from "@/lib/auth";
 import { Logo } from "@/components/layout/logo";
+import { MotionProvider } from "@/components/ui/motion-provider";
 
 const NAV = [
   { href: "/admin", label: "Tableau de bord", Icon: LayoutDashboard },
@@ -54,7 +55,8 @@ export default async function AdminLayout({
   const isAdmin = session.user.role === "ADMIN";
 
   return (
-    <div className="min-h-screen bg-surface-muted">
+    <MotionProvider>
+      <div className="min-h-screen bg-surface-muted">
       <div className="flex min-h-screen">
         <aside className="hidden w-64 shrink-0 border-r border-line bg-surface lg:block">
           <div className="sticky top-0 flex h-screen flex-col">
@@ -147,6 +149,7 @@ export default async function AdminLayout({
           <main className="p-6 lg:p-10">{children}</main>
         </div>
       </div>
-    </div>
+      </div>
+    </MotionProvider>
   );
 }

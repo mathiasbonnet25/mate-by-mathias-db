@@ -80,19 +80,19 @@ export function ProductCard({
             </div>
           )}
 
-          <div className="absolute left-0 top-0 flex flex-col items-start gap-1 p-3">
+          <div className="absolute left-0 top-0 flex flex-col items-start gap-1.5 p-4">
             {discounted && (
-              <span className="bg-accent px-2.5 py-1 text-[9px] uppercase tracking-[0.18em] text-accent-contrast">
+              <span className="rounded-full bg-accent px-3 py-1.5 shadow-[var(--shadow-soft)] text-[9px] uppercase tracking-[0.18em] text-accent-contrast">
                 Promotion
               </span>
             )}
             {product.isMadeToOrder && (
-              <span className="bg-foreground px-2.5 py-1 text-[9px] uppercase tracking-[0.18em] text-surface">
+              <span className="rounded-full bg-foreground px-3 py-1.5 shadow-[var(--shadow-soft)] text-[9px] uppercase tracking-[0.18em] text-surface">
                 Sur mesure
               </span>
             )}
             {!product.inStock && !product.isMadeToOrder && (
-              <span className="rounded-full border border-line bg-surface/90 px-2.5 py-1 text-[9px] uppercase tracking-[0.18em]">
+              <span className="rounded-full border border-line bg-surface/90 px-3 py-1.5 text-[9px] uppercase tracking-[0.18em] backdrop-blur-sm">
                 Épuisé
               </span>
             )}

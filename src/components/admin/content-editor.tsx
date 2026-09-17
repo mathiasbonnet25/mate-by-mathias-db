@@ -150,7 +150,7 @@ export function ContentEditor({ groups }: { groups: ContentGroup[] }) {
           type="button"
           onClick={() => save(true)}
           disabled={pending}
-          className="inline-flex h-11 items-center gap-2 bg-accent px-6 text-[11px] uppercase tracking-[0.16em] text-accent-contrast transition-all hover:brightness-110 disabled:opacity-50"
+          className="rounded-full inline-flex h-11 items-center gap-2 bg-accent px-6 text-[11px] uppercase tracking-[0.16em] text-accent-contrast transition-all hover:brightness-110 disabled:opacity-50"
         >
           Publier
         </button>

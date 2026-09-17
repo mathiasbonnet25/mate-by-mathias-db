@@ -120,7 +120,11 @@ export function ProductDetail({ product }: { product: ProductDetailData }) {
     if (!variant) return;
     setError(null);
     startTransition(async () => {
-      const ok = await add(variant.id, quantity);
+      const ok = await add(variant.id, quantity, {
+        nom: product.name,
+        variante: variant.label,
+        imageUrl: galleryImages[0]?.url ?? null,
+      });
       if (!ok) {
         setError("Ajout impossible. Vérifiez la disponibilité de cet article.");
         return;
@@ -303,7 +307,7 @@ export function ProductDetail({ product }: { product: ProductDetailData }) {
             type="button"
             disabled={!available || pending}
             onClick={() => handleAdd()}
-            className="flex h-12 flex-1 items-center justify-center gap-2 bg-foreground text-[11px] uppercase tracking-[0.18em] text-surface transition-all duration-500 hover:bg-accent hover:text-accent-contrast disabled:cursor-not-allowed disabled:opacity-40"
+            className="rounded-full flex h-12 flex-1 items-center justify-center gap-2 bg-foreground text-[11px] uppercase tracking-[0.18em] text-surface transition-all duration-500 hover:bg-accent hover:text-accent-contrast disabled:cursor-not-allowed disabled:opacity-40"
           >
             <AnimatePresence mode="wait" initial={false}>
               {pending ? (

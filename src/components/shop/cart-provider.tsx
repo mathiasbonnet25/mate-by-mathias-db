@@ -11,12 +11,24 @@ import {
 import { useRouter } from "next/navigation";
 
 import { addToCartAction } from "@/app/actions/cart";
+import { useToast } from "@/components/ui/toast";
+
+/** Informations d'affichage passées à la notification de confirmation. */
+export type ArticleAjoute = {
+  nom: string;
+  variante?: string | null;
+  imageUrl?: string | null;
+};
 
 type CartContextValue = {
   count: number;
   pending: boolean;
   lastError: string | null;
-  add: (variantId: string, quantity?: number) => Promise<boolean>;
+  add: (
+    variantId: string,
+    quantity?: number,
+    article?: ArticleAjoute,
+  ) => Promise<boolean>;
   refresh: () => void;
 };
 
@@ -43,6 +55,7 @@ export function useCart() {
  */
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
+  const { notifier } = useToast();
   const [pending, startTransition] = useTransition();
   const [count, setCount] = useState(0);
   const [lastError, setLastError] = useState<string | null>(null);
@@ -61,20 +74,35 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   }, [refresh]);
 
   const add = useCallback(
-    async (variantId: string, quantity = 1) => {
+    async (variantId: string, quantity = 1, article?: ArticleAjoute) => {
       setLastError(null);
       setCount((c) => c + quantity);
 
       const result = await addToCartAction(variantId, quantity);
-      if (!result.ok) {
+
+      if (result.ok) {
+        notifier({
+          ton: "succes",
+          titre: article
+            ? `${article.nom} ajouté au panier`
+            : "Article ajouté au panier",
+          detail: article?.variante ?? undefined,
+          imageUrl: article?.imageUrl ?? undefined,
+        });
+      } else {
         setLastError(result.error ?? "Ajout impossible.");
+        notifier({
+          ton: "erreur",
+          titre: "Ajout impossible",
+          detail: result.error ?? undefined,
+        });
       }
 
       refresh();
       startTransition(() => router.refresh());
       return result.ok;
     },
-    [refresh, router],
+    [notifier, refresh, router],
   );
 
   return (

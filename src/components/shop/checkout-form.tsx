@@ -290,7 +290,7 @@ export function CheckoutForm({
           <button
             type="submit"
             disabled={loading || cart.items.length === 0}
-            className="mt-7 flex h-13 w-full items-center justify-center gap-2 bg-foreground py-4 text-[11px] uppercase tracking-[0.18em] text-surface transition-all hover:bg-accent hover:text-accent-contrast disabled:opacity-40"
+            className="rounded-full mt-7 flex h-13 w-full items-center justify-center gap-2 bg-foreground py-4 text-[11px] uppercase tracking-[0.18em] text-surface transition-all hover:bg-accent hover:text-accent-contrast disabled:opacity-40"
           >
             {loading ? (
               <>

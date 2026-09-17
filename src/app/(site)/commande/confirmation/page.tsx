@@ -111,7 +111,7 @@ export default async function ConfirmationPage({
           </Link>
           <Link
             href="/"
-            className="h-12 bg-accent px-8 text-[11px] uppercase leading-[3rem] tracking-[0.18em] text-accent-contrast transition-all hover:brightness-110"
+            className="rounded-full h-12 bg-accent px-8 text-[11px] uppercase leading-[3rem] tracking-[0.18em] text-accent-contrast transition-all hover:brightness-110"
           >
             Retour à l&apos;accueil
           </Link>

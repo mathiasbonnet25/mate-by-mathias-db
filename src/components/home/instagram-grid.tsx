@@ -44,7 +44,7 @@ export function InstagramGrid({
           <button
             type="button"
             onClick={openPreferences}
-            className="h-11 bg-accent px-7 text-[11px] uppercase tracking-[0.18em] text-accent-contrast transition-all hover:brightness-110"
+            className="rounded-full h-11 bg-accent px-7 text-[11px] uppercase tracking-[0.18em] text-accent-contrast transition-all hover:brightness-110"
           >
             Autoriser les contenus externes
           </button>

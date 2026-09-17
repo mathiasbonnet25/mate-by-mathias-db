@@ -33,6 +33,14 @@ export function Configurator({
   options: Record<StepKey, OptionView[]>;
 }) {
   const [stepIndex, setStepIndex] = useState(0);
+  /** +1 quand on avance, −1 quand on revient en arrière. */
+  const [sens, setSens] = useState(1);
+
+  /** Change d'étape en mémorisant la direction, pour l'animation. */
+  function allerA(index: number) {
+    setSens(index >= stepIndex ? 1 : -1);
+    setStepIndex(index);
+  }
   const [selection, setSelection] = useState<Selection>({
     support: null,
     paint: null,
@@ -158,7 +166,7 @@ export function Configurator({
               <li key={s.key} className="flex items-center gap-3">
                 <button
                   type="button"
-                  onClick={() => setStepIndex(i)}
+                  onClick={() => allerA(i)}
                   className="flex items-center gap-2.5 text-left"
                   aria-current={current ? "step" : undefined}
                 >
@@ -193,10 +201,10 @@ export function Configurator({
           {!isRecap ? (
             <motion.div
               key={step.key}
-              initial={{ opacity: 0, x: 18 }}
+              initial={{ opacity: 0, x: sens * 56 }}
               animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -18 }}
-              transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+              exit={{ opacity: 0, x: sens * -56 }}
+              transition={{ duration: 0.5, ease: [0.32, 0.72, 0, 1] }}
             >
               <p className="eyebrow">Étape {stepIndex + 1} sur {STEPS.length}</p>
               <h2 className="mt-3 font-display text-3xl md:text-4xl">
@@ -258,10 +266,10 @@ export function Configurator({
             <motion.form
               key="recap"
               onSubmit={onSubmit}
-              initial={{ opacity: 0, x: 18 }}
+              initial={{ opacity: 0, x: sens * 56 }}
               animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -18 }}
-              transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+              exit={{ opacity: 0, x: sens * -56 }}
+              transition={{ duration: 0.5, ease: [0.32, 0.72, 0, 1] }}
               noValidate
             >
               <p className="eyebrow">Dernière étape</p>
@@ -349,7 +357,7 @@ export function Configurator({
               <button
                 type="submit"
                 disabled={pending}
-                className="mt-8 inline-flex h-13 items-center gap-2 bg-accent px-10 py-4 text-[11px] uppercase tracking-[0.18em] text-accent-contrast transition-all hover:brightness-110 disabled:opacity-50"
+                className="rounded-full mt-8 inline-flex h-13 items-center gap-2 bg-accent px-10 py-4 text-[11px] uppercase tracking-[0.18em] text-accent-contrast transition-all hover:brightness-110 disabled:opacity-50"
               >
                 {pending && <Loader2 className="h-4 w-4 animate-spin" aria-hidden />}
                 Envoyer ma demande
@@ -362,7 +370,7 @@ export function Configurator({
         <div className="mt-12 flex items-center justify-between border-t border-line pt-8">
           <button
             type="button"
-            onClick={() => setStepIndex((i) => Math.max(0, i - 1))}
+            onClick={() => allerA(Math.max(0, stepIndex - 1))}
             disabled={stepIndex === 0}
             className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.16em] transition-colors hover:text-accent disabled:opacity-30"
           >
@@ -373,9 +381,9 @@ export function Configurator({
           {!isRecap && (
             <button
               type="button"
-              onClick={() => setStepIndex((i) => i + 1)}
+              onClick={() => allerA(stepIndex + 1)}
               disabled={!stepComplete}
-              className="inline-flex items-center gap-2 bg-foreground px-8 py-3.5 text-[11px] uppercase tracking-[0.16em] text-surface transition-all hover:bg-accent hover:text-accent-contrast disabled:opacity-30"
+              className="rounded-full inline-flex items-center gap-2 bg-foreground px-8 py-3.5 text-[11px] uppercase tracking-[0.16em] text-surface transition-all hover:bg-accent hover:text-accent-contrast disabled:opacity-30"
             >
               {stepIndex === STEPS.length - 1 ? "Récapitulatif" : "Continuer"}
               <ArrowRight className="h-4 w-4" aria-hidden />
@@ -427,7 +435,7 @@ export function Configurator({
           {!isRecap && (
             <button
               type="button"
-              onClick={() => setStepIndex(STEPS.length)}
+              onClick={() => allerA(STEPS.length)}
               disabled={!selection.support}
               className="mt-6 h-12 w-full rounded-full border border-line text-[11px] uppercase tracking-[0.16em] transition-colors hover:border-accent hover:text-accent disabled:opacity-30"
             >

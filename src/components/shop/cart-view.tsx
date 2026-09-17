@@ -62,7 +62,7 @@ export function CartView({ cart }: { cart: CartViewData }) {
           </Link>
           <Link
             href="/personnalisation"
-            className="h-12 bg-accent px-8 text-[11px] uppercase leading-[3rem] tracking-[0.18em] text-accent-contrast transition-all hover:brightness-110"
+            className="rounded-full h-12 bg-accent px-8 text-[11px] uppercase leading-[3rem] tracking-[0.18em] text-accent-contrast transition-all hover:brightness-110"
           >
             Atelier personnalisation
           </Link>
@@ -290,7 +290,7 @@ export function CartView({ cart }: { cart: CartViewData }) {
 
           <Link
             href="/commande"
-            className="mt-7 block h-13 bg-foreground py-4 text-center text-[11px] uppercase tracking-[0.18em] text-surface transition-all hover:bg-accent hover:text-accent-contrast"
+            className="rounded-full mt-7 block h-13 bg-foreground py-4 text-center text-[11px] uppercase tracking-[0.18em] text-surface transition-all hover:bg-accent hover:text-accent-contrast"
           >
             Passer commande
           </Link>

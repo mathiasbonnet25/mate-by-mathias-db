@@ -183,7 +183,7 @@ export function CookieConsentProvider({
                 <button
                   type="button"
                   onClick={() => persist(acceptAll(), "BANNER")}
-                  className="h-11 bg-accent px-6 text-[11px] uppercase tracking-[0.18em] text-accent-contrast transition-all hover:brightness-110"
+                  className="rounded-full h-11 bg-accent px-6 text-[11px] uppercase tracking-[0.18em] text-accent-contrast transition-all hover:brightness-110"
                 >
                   Tout accepter
                 </button>
@@ -285,7 +285,7 @@ export function CookieConsentProvider({
                 <button
                   type="button"
                   onClick={() => persist(acceptAll(), "PREFERENCES")}
-                  className="h-11 bg-accent px-6 text-[11px] uppercase tracking-[0.18em] text-accent-contrast transition-all hover:brightness-110"
+                  className="rounded-full h-11 bg-accent px-6 text-[11px] uppercase tracking-[0.18em] text-accent-contrast transition-all hover:brightness-110"
                 >
                   Tout accepter
                 </button>

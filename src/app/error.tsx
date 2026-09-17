@@ -35,7 +35,7 @@ export default function Error({
           <button
             type="button"
             onClick={reset}
-            className="h-12 bg-foreground px-8 text-[11px] uppercase tracking-[0.18em] text-surface transition-colors hover:bg-accent hover:text-accent-contrast"
+            className="rounded-full h-12 bg-foreground px-8 text-[11px] uppercase tracking-[0.18em] text-surface transition-colors hover:bg-accent hover:text-accent-contrast"
           >
             Réessayer
           </button>

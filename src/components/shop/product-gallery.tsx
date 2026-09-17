@@ -95,7 +95,7 @@ export function ProductGallery({
       {/* Visuel principal */}
       <div className="relative flex-1">
         <div
-          className="group relative aspect-square cursor-zoom-in overflow-hidden bg-surface-muted"
+          className="group relative aspect-square cursor-zoom-in overflow-hidden rounded-xl bg-surface-muted shadow-[var(--shadow-soft)]"
           onMouseEnter={() => !spinMode && setZoomed(true)}
           onMouseLeave={() => setZoomed(false)}
           onMouseMove={onPointerMove}
@@ -126,10 +126,10 @@ export function ProductGallery({
             <AnimatePresence mode="wait">
               <motion.div
                 key={current.id}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+                initial={{ opacity: 0, scale: 1.045 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.985 }}
+                transition={{ duration: 0.6, ease: [0.32, 0.72, 0, 1] }}
                 className="absolute inset-0"
               >
                 <Image
@@ -153,7 +153,7 @@ export function ProductGallery({
           )}
 
           <div className="pointer-events-none absolute bottom-4 right-4 flex items-center gap-2 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
-            <span className="grid h-9 w-9 place-items-center bg-surface/90 text-foreground">
+            <span className="grid h-10 w-10 place-items-center rounded-full bg-surface/90 text-foreground shadow-[var(--shadow-soft)] backdrop-blur-sm">
               <ZoomIn className="h-4 w-4" aria-hidden />
             </span>
           </div>
@@ -197,10 +197,10 @@ export function ProductGallery({
               }}
               aria-label={`Voir la photo ${i + 1} sur ${images.length}`}
               aria-current={i === index}
-              className={`relative aspect-square w-20 shrink-0 overflow-hidden border transition-all lg:w-full ${
+              className={`relative aspect-square w-20 shrink-0 overflow-hidden rounded-md border-2 transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] lg:w-full ${
                 i === index
-                  ? "border-accent"
-                  : "border-transparent opacity-65 hover:opacity-100"
+                  ? "border-accent opacity-100"
+                  : "border-transparent opacity-60 hover:scale-[1.04] hover:opacity-100"
               }`}
             >
               <Image
