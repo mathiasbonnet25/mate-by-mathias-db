@@ -43,8 +43,12 @@ vélos, avec une boutique d'équipement.
   port, paiement Stripe (carte, PayPal, Apple Pay, Google Pay).
 - **Compte client** : commandes, suivi, factures, devis, favoris, adresses,
   double authentification et exercice des droits sur les données.
-- **Pages légales** : mentions légales, CGV, confidentialité, cookies,
-  rétractation, livraison, FAQ, guide des tailles.
+- **Réclamations** : dépôt d'un dossier numéroté avec motif, numéro de
+  commande et photos, accusé de réception automatique, suivi.
+- **Aide et informations légales** : page d'ensemble regroupant tous les
+  documents, « Comment ça marche », mentions légales, CGV,
+  confidentialité, cookies, rétractation, livraison, retours et
+  remboursements, garanties et SAV, FAQ, guide des tailles.
 
 ### Côté administration
 
@@ -64,8 +68,14 @@ vélos, avec une boutique d'équipement.
 - **Statistiques** : audience, pages populaires, appareils, ventes.
 - **Aperçu responsive** : rendu en ordinateur, tablette et téléphone avant
   publication.
-- **Conformité** : traceurs et coupe-circuit, preuves de consentement, suivi
-  des demandes RGPD, journal d'audit.
+- **Réclamations** : liste priorisée par ancienneté, fiche avec fil des
+  échanges, notes internes distinctes des réponses, statuts, résolution,
+  et alerte au-delà des quinze jours d'engagement.
+- **Estimateur** : barème de l'atelier réglable, avec aperçu de la
+  fourchette recalculé en direct.
+- **Conformité** : catégories de traceurs et traceurs éditables,
+  coupe-circuit, preuves de consentement, suivi des demandes RGPD,
+  journal d'audit.
 - **Utilisateurs** : attribution des rôles, avec protection du dernier
   compte administrateur.
 
@@ -315,6 +325,11 @@ Pour rester exact sur l'état du projet :
 
 - **Réinitialisation du mot de passe par courriel** : la page existe et
   oriente vers le contact ; le lien à usage unique reste à brancher.
+- **Vidéos produit** : le modèle existe en base, l'éditeur produit ne les
+  gère pas encore.
+- **ESLint** : aucune configuration n'est présente dans le projet. Les
+  contrôles en place sont TypeScript en mode strict et la compilation de
+  production, tous deux verts.
 - **PayPal** : le paiement passe par Stripe, qui propose PayPal comme moyen
   de paiement. Une intégration directe à l'API PayPal n'est pas en place.
 - **Génération des PDF** de factures et de devis : les documents sont
@@ -323,5 +338,8 @@ Pour rester exact sur l'état du projet :
   saisies en base, la synchronisation avec l'API Meta n'est pas faite.
 - **Éditeur de FAQ, de menus et de bannières** dans l'administration : les
   modèles existent en base, l'écran d'édition reste à écrire.
+- **Corps des pages juridiques** : rédigé dans le code, non modifiable
+  depuis l'administration — choix assumé, les textes devant être figés
+  par un juriste avant mise en ligne.
 - **Tests automatisés** : les parcours ont été vérifiés manuellement au
   navigateur ; aucune suite de tests n'est versionnée.
