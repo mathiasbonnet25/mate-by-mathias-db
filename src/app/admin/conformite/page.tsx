@@ -1,10 +1,12 @@
 import { AdminHeader, Card, Stat } from "@/components/admin/ui";
 import {
   DataRequestPanel,
-  TrackerPanel,
   type DataRequestRow,
-  type TrackerRow,
 } from "@/components/admin/compliance-panels";
+import {
+  CookieEditor,
+  type CategorieRow,
+} from "@/components/admin/cookie-editor";
 import { prisma } from "@/lib/prisma";
 import { COOKIE_POLICY_VERSION } from "@/lib/consent";
 import { formatDateTime } from "@/lib/utils";
@@ -38,8 +40,15 @@ export default async function AdminCompliancePage() {
       }),
     ]);
 
-  const trackers: TrackerRow[] = categories.flatMap((category) =>
-    category.trackers.map((tracker) => ({
+  const rubriques: CategorieRow[] = categories.map((category) => ({
+    id: category.id,
+    slug: category.slug,
+    name: category.name,
+    description: category.description,
+    isEssential: category.isEssential,
+    position: category.position,
+    isActive: category.isActive,
+    trackers: category.trackers.map((tracker) => ({
       id: tracker.id,
       name: tracker.name,
       vendor: tracker.vendor,
@@ -47,9 +56,12 @@ export default async function AdminCompliancePage() {
       retention: tracker.retention,
       recipientCountry: tracker.recipientCountry,
       isActive: tracker.isActive,
-      categoryName: category.name,
-      isEssential: category.isEssential,
     })),
+  }));
+
+  const nombreTraceurs = rubriques.reduce(
+    (total, r) => total + r.trackers.length,
+    0,
   );
 
   const requestRows: DataRequestRow[] = requests.map((r) => ({
@@ -81,7 +93,7 @@ export default async function AdminCompliancePage() {
           value={String(consents)}
           hint="Horodatées, sans IP en clair"
         />
-        <Stat label="Traceurs déclarés" value={String(trackers.length)} />
+        <Stat label="Traceurs déclarés" value={String(nombreTraceurs)} />
         <Stat
           label="Politique de cookies"
           value={COOKIE_POLICY_VERSION}
@@ -89,14 +101,8 @@ export default async function AdminCompliancePage() {
         />
       </div>
 
-      <Card title="Traceurs et coupe-circuit" className="mt-4">
-        <p className="mb-5 text-[12px] leading-relaxed text-foreground-muted">
-          Chaque outil tiers doit être déclaré ici : il apparaît alors dans la
-          politique de cookies avec sa finalité et sa durée de conservation. Le
-          bouton permet de couper immédiatement un traceur jugé non conforme,
-          sans attendre un déploiement.
-        </p>
-        <TrackerPanel trackers={trackers} />
+      <Card title="Catégories et traceurs" className="mt-4">
+        <CookieEditor categories={rubriques} />
       </Card>
 
       <Card title="Demandes relatives aux données personnelles" className="mt-4">

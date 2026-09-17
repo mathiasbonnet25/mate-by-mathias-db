@@ -153,6 +153,173 @@ export async function saveCustomizationOptions(
 // Conformité : traceurs et demandes RGPD
 // ---------------------------------------------------------------------------
 
+const categorieSchema = z.object({
+  id: z.string().max(60).optional(),
+  slug: z
+    .string()
+    .trim()
+    .regex(/^[a-z0-9-]+$/, "Identifiant en minuscules, sans espace.")
+    .max(40),
+  name: z.string().trim().min(1, "Le nom est obligatoire.").max(120),
+  description: z
+    .string()
+    .trim()
+    .min(20, "Décrivez la finalité de façon compréhensible.")
+    .max(2000),
+  position: z.number().int().min(0).max(99),
+  isActive: z.boolean(),
+});
+
+/**
+ * Catégories de traceurs.
+ *
+ * La CNIL impose d'expliquer la finalité de chaque catégorie en termes
+ * compréhensibles : ces descriptions sont reprises telles quelles dans le
+ * bandeau de consentement et la politique de cookies.
+ *
+ * Le caractère « strictement nécessaire » n'est volontairement pas
+ * modifiable depuis cet écran : c'est lui qui détermine si une catégorie
+ * échappe au consentement. Le basculer par erreur reviendrait à déposer
+ * des traceurs sans accord.
+ */
+export async function saveCookieCategory(input: unknown): Promise<ContentResult> {
+  const staff = await requireStaff();
+  const parsed = categorieSchema.safeParse(input);
+  if (!parsed.success) {
+    return {
+      ok: false,
+      error: parsed.error.issues[0]?.message ?? "Formulaire invalide.",
+    };
+  }
+
+  const data = parsed.data;
+
+  try {
+    const conflit = await prisma.cookieCategory.findFirst({
+      where: { slug: data.slug, ...(data.id ? { id: { not: data.id } } : {}) },
+      select: { id: true },
+    });
+    if (conflit) {
+      return { ok: false, error: "Cet identifiant est déjà utilisé." };
+    }
+
+    const base = {
+      slug: data.slug,
+      name: data.name,
+      description: data.description,
+      position: data.position,
+      isActive: data.isActive,
+    };
+
+    const categorie = data.id
+      ? await prisma.cookieCategory.update({ where: { id: data.id }, data: base })
+      : await prisma.cookieCategory.create({
+          data: { ...base, isEssential: false },
+        });
+
+    await logAudit({
+      action: data.id ? "cookie_category.update" : "cookie_category.create",
+      actorId: staff.id,
+      actorEmail: staff.email,
+      entity: "CookieCategory",
+      entityId: categorie.id,
+      severity: "WARNING",
+    });
+
+    revalidatePath("/cookies");
+    revalidatePath("/admin/conformite");
+    return { ok: true };
+  } catch (error) {
+    console.error("[conformité] catégorie non enregistrée", error);
+    return { ok: false, error: "Enregistrement impossible." };
+  }
+}
+
+const traceurSchema = z.object({
+  id: z.string().max(60).optional(),
+  categoryId: z.string().min(1).max(60),
+  name: z.string().trim().min(1, "Le nom du traceur est obligatoire.").max(120),
+  vendor: z.string().trim().min(1, "L'émetteur est obligatoire.").max(120),
+  purpose: z
+    .string()
+    .trim()
+    .min(10, "Décrivez la finalité du traceur.")
+    .max(1000),
+  retention: z.string().trim().max(120).optional(),
+  recipientCountry: z.string().trim().max(120).optional(),
+  isActive: z.boolean(),
+});
+
+/** Déclaration ou mise à jour d'un traceur. */
+export async function saveTracker(input: unknown): Promise<ContentResult> {
+  const staff = await requireStaff();
+  const parsed = traceurSchema.safeParse(input);
+  if (!parsed.success) {
+    return {
+      ok: false,
+      error: parsed.error.issues[0]?.message ?? "Formulaire invalide.",
+    };
+  }
+
+  const data = parsed.data;
+
+  try {
+    const base = {
+      categoryId: data.categoryId,
+      name: data.name,
+      vendor: data.vendor,
+      purpose: data.purpose,
+      retention: data.retention || null,
+      recipientCountry: data.recipientCountry || null,
+      isActive: data.isActive,
+    };
+
+    const traceur = data.id
+      ? await prisma.cookieTracker.update({ where: { id: data.id }, data: base })
+      : await prisma.cookieTracker.create({ data: base });
+
+    await logAudit({
+      action: data.id ? "tracker.update" : "tracker.create",
+      actorId: staff.id,
+      actorEmail: staff.email,
+      entity: "CookieTracker",
+      entityId: traceur.id,
+      severity: "WARNING",
+    });
+
+    revalidatePath("/cookies");
+    revalidatePath("/admin/conformite");
+    return { ok: true };
+  } catch (error) {
+    console.error("[conformité] traceur non enregistré", error);
+    return { ok: false, error: "Enregistrement impossible." };
+  }
+}
+
+export async function deleteTracker(trackerId: string): Promise<ContentResult> {
+  const staff = await requireStaff();
+  if (typeof trackerId !== "string") {
+    return { ok: false, error: "Requête invalide." };
+  }
+
+  try {
+    await prisma.cookieTracker.delete({ where: { id: trackerId } });
+    await logAudit({
+      action: "tracker.delete",
+      actorId: staff.id,
+      actorEmail: staff.email,
+      entity: "CookieTracker",
+      entityId: trackerId,
+      severity: "WARNING",
+    });
+    revalidatePath("/cookies");
+    revalidatePath("/admin/conformite");
+    return { ok: true };
+  } catch {
+    return { ok: false, error: "Suppression impossible." };
+  }
+}
+
 /**
  * Coupe-circuit d'un traceur : permet de désactiver immédiatement un outil
  * tiers jugé non conforme, sans attendre une mise en production.

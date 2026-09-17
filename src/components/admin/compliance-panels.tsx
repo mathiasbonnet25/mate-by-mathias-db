@@ -2,101 +2,10 @@
 
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
-import { Loader2, Power } from "lucide-react";
+import { Loader2 } from "lucide-react";
 
-import { toggleTracker, updateDataRequest } from "@/app/actions/admin-content";
+import { updateDataRequest } from "@/app/actions/admin-content";
 import { formatDate } from "@/lib/utils";
-
-export type TrackerRow = {
-  id: string;
-  name: string;
-  vendor: string;
-  purpose: string;
-  retention: string | null;
-  recipientCountry: string | null;
-  isActive: boolean;
-  categoryName: string;
-  isEssential: boolean;
-};
-
-/**
- * Coupe-circuit des traceurs : permet de désactiver immédiatement un outil
- * tiers, sans déploiement. Un traceur désactivé disparaît de la politique de
- * cookies et n'est plus chargé.
- */
-export function TrackerPanel({ trackers }: { trackers: TrackerRow[] }) {
-  const router = useRouter();
-  const [pending, startTransition] = useTransition();
-  const [error, setError] = useState<string | null>(null);
-
-  if (trackers.length === 0) {
-    return (
-      <p className="border border-dashed border-line p-8 text-center text-sm text-foreground-muted">
-        Aucun traceur déclaré. Déclarez ici chaque outil tiers utilisé afin
-        qu&apos;il apparaisse dans la politique de cookies.
-      </p>
-    );
-  }
-
-  return (
-    <div className="space-y-3">
-      {trackers.map((tracker) => (
-        <div
-          key={tracker.id}
-          className="flex flex-wrap items-center justify-between gap-4 rounded-lg border border-line p-4"
-        >
-          <div className="min-w-56 flex-1">
-            <p className="text-sm">
-              {tracker.name}
-              <span className="ml-2 text-[11px] text-foreground-muted">
-                {tracker.vendor}
-                {tracker.recipientCountry ? ` · ${tracker.recipientCountry}` : ""}
-              </span>
-            </p>
-            <p className="mt-1 text-[12px] leading-relaxed text-foreground-muted">
-              {tracker.purpose}
-            </p>
-            <p className="mt-1 text-[11px] text-foreground-muted">
-              Catégorie : {tracker.categoryName}
-              {tracker.isEssential ? " (exempt de consentement)" : ""}
-              {tracker.retention ? ` · Conservation : ${tracker.retention}` : ""}
-            </p>
-          </div>
-
-          <button
-            type="button"
-            disabled={pending}
-            onClick={() =>
-              startTransition(async () => {
-                setError(null);
-                const result = await toggleTracker(tracker.id, !tracker.isActive);
-                if (!result.ok) {
-                  setError(result.error ?? "Modification impossible.");
-                  return;
-                }
-                router.refresh();
-              })
-            }
-            className={`inline-flex h-10 shrink-0 items-center gap-2 border px-5 text-[11px] uppercase tracking-[0.14em] transition-colors ${
-              tracker.isActive
-                ? "border-accent text-accent hover:border-red-500 hover:text-red-500"
-                : "border-line text-foreground-muted hover:border-accent hover:text-accent"
-            } disabled:opacity-50`}
-          >
-            <Power className="h-3.5 w-3.5" aria-hidden />
-            {tracker.isActive ? "Actif — désactiver" : "Inactif — activer"}
-          </button>
-        </div>
-      ))}
-
-      {error && (
-        <p className="text-[12px] text-red-500" role="alert">
-          {error}
-        </p>
-      )}
-    </div>
-  );
-}
 
 export type DataRequestRow = {
   id: string;
