@@ -120,7 +120,7 @@ export default async function CommentCaMarchePage() {
         <ol className="grid gap-10 md:grid-cols-2 lg:grid-cols-3">
           {ACHAT.map((etape, i) => (
             <Reveal key={etape.titre} delay={i * 0.06} as="li">
-              <span className="font-display text-5xl text-accent/25">
+              <span className="font-display text-5xl text-accent">
                 {String(i + 1).padStart(2, "0")}
               </span>
               <h3 className="mt-4 font-display text-2xl">{etape.titre}</h3>
@@ -136,7 +136,7 @@ export default async function CommentCaMarchePage() {
         <ol className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
           {ATELIER.map((etape, i) => (
             <Reveal key={etape.titre} delay={i * 0.06} as="li">
-              <span className="font-display text-5xl text-accent/25">
+              <span className="font-display text-5xl text-accent">
                 {String(i + 1).padStart(2, "0")}
               </span>
               <h3 className="mt-4 font-display text-2xl">{etape.titre}</h3>

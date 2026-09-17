@@ -62,7 +62,7 @@ export default async function ReclamationsPage() {
           <ol className="mb-16 grid gap-8 md:grid-cols-2 lg:grid-cols-4 lg:gap-10">
             {ETAPES.map((etape, i) => (
               <li key={etape.titre}>
-                <span className="font-display text-5xl text-accent/25">
+                <span className="font-display text-5xl text-accent">
                   {String(i + 1).padStart(2, "0")}
                 </span>
                 <h2 className="mt-4 font-display text-xl">{etape.titre}</h2>

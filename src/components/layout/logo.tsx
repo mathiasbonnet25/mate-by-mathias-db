@@ -85,7 +85,7 @@ export function Logo({
       {compact ? (
         <span className="sr-only">Mate by Mathias</span>
       ) : (
-        <span className="logo-word flex flex-col leading-none">
+        <span className="logo-word flex flex-col leading-none whitespace-nowrap">
           <span className="font-display text-lg tracking-[0.2em] uppercase">
             Mate
           </span>{" "}

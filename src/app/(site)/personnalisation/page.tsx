@@ -69,7 +69,7 @@ export default async function PersonnalisationPage() {
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
           {ETAPES.map((etape, index) => (
             <Reveal key={etape.title} delay={index * 0.08}>
-              <p className="font-display text-5xl text-accent/30">
+              <p className="font-display text-5xl text-accent">
                 {String(index + 1).padStart(2, "0")}
               </p>
               <h3 className="mt-5 font-display text-2xl">{etape.title}</h3>

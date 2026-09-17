@@ -13,7 +13,7 @@ export default function NotFound() {
   return (
     <div className="container-page flex min-h-[80vh] items-center justify-center py-40">
       <div className="max-w-md text-center">
-        <p className="font-display text-7xl text-accent/30">404</p>
+        <p className="font-display text-7xl text-accent">404</p>
         <h1 className="mt-6 font-display text-4xl">Page introuvable</h1>
         <p className="mt-5 text-sm leading-relaxed text-foreground-muted">
           Cette adresse ne correspond à aucune page. Le produit a peut-être été

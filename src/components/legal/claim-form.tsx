@@ -241,6 +241,10 @@ export function ClaimForm({ defaultEmail }: { defaultEmail?: string | null }) {
           type="file"
           multiple
           accept="image/jpeg,image/png,image/webp,image/avif"
+          /* Le champ est masqué et déclenché par le bouton voisin : il lui
+             faut malgré tout un nom accessible, sinon il reste annoncé
+             comme un champ sans étiquette. */
+          aria-label="Ajouter des photos à votre réclamation"
           className="sr-only"
           onChange={(e) => {
             if (e.target.files?.length) televerser(e.target.files);
