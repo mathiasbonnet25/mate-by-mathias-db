@@ -166,12 +166,8 @@ export default async function HomePage() {
           }
         >
           <RevealGroup className="grid grid-cols-2 gap-x-5 gap-y-12 lg:grid-cols-4">
-            {featured.map((product, index) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                priority={index < 2}
-              />
+            {featured.map((product) => (
+              <ProductCard key={product.id} product={product} />
             ))}
           </RevealGroup>
         </Section>

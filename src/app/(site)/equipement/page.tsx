@@ -1,5 +1,3 @@
-import { Suspense } from "react";
-
 import { CatalogView, type CatalogSearchParams } from "@/components/shop/catalog-view";
 import { PageIntro } from "@/components/shop/page-intro";
 import { buildMetadata, breadcrumbJsonLd, jsonLdScript } from "@/lib/seo";
@@ -44,19 +42,8 @@ export default async function EquipementPage({
         ]}
       />
 
-      <Suspense fallback={<CatalogSkeleton />}>
-        <CatalogView universe="EQUIPEMENT" searchParams={params} basePath="/equipement" />
-      </Suspense>
+      <CatalogView universe="EQUIPEMENT" searchParams={params} basePath="/equipement" />
     </>
   );
 }
 
-function CatalogSkeleton() {
-  return (
-    <div className="container-page grid grid-cols-2 gap-5 pb-28 lg:grid-cols-4">
-      {Array.from({ length: 8 }).map((_, i) => (
-        <div key={i} className="aspect-[4/5] animate-pulse bg-surface-muted" />
-      ))}
-    </div>
-  );
-}

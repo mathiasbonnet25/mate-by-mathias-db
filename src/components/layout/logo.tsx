@@ -16,7 +16,6 @@ export function Logo({
     <Link
       href="/"
       className={cn("group inline-flex items-center gap-3", className)}
-      aria-label="Mate by Mathias — retour à l'accueil"
     >
       <svg
         viewBox="0 0 40 40"
@@ -40,11 +39,17 @@ export function Logo({
           strokeLinejoin="round"
         />
       </svg>
-      {!compact && (
+      {/* Le nom est le texte accessible du lien : pas d'aria-label qui
+          viendrait le remplacer par un libellé différent de ce qui est lu
+          à l'écran. Les deux fragments sont séparés par une espace réelle
+          pour que le nom accessible soit bien « Mate by Mathias ». */}
+      {compact ? (
+        <span className="sr-only">Mate by Mathias</span>
+      ) : (
         <span className="flex flex-col leading-none">
           <span className="font-display text-lg tracking-[0.2em] uppercase">
             Mate
-          </span>
+          </span>{" "}
           <span className="text-[9px] tracking-[0.42em] uppercase text-foreground-muted">
             by Mathias
           </span>

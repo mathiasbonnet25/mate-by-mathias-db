@@ -36,8 +36,12 @@ export function Reviews({ reviews }: { reviews: ReviewData[] }) {
             variants={revealItem}
             className="flex h-full flex-col border border-line p-8 transition-colors duration-500 hover:border-accent/50"
           >
+            {/* Le rôle img fait de ce groupe d'étoiles une image porteuse
+                de sens, ce qui rend son étiquette exploitable par les
+                lecteurs d'écran. */}
             <div
               className="flex gap-1"
+              role="img"
               aria-label={`Note : ${review.rating} sur 5`}
             >
               {Array.from({ length: 5 }).map((_, i) => (

@@ -50,7 +50,9 @@
   --foreground: #1a1a18;
   --foreground-muted: #5c5c56;
   --border: #e6e6e2;
-  --accent: #a87b2f;
+  /* Or de la marque, assombri pour atteindre un contraste de 5,5:1 sur
+     blanc : le ton reste chaud, le texte reste lisible. */
+  --accent: #8a6127;
   --accent-contrast: #ffffff;
   --overlay: rgba(13, 13, 12, 0.55);
 
@@ -270,5 +272,56 @@
   .legal-prose th {
     color: var(--foreground);
     font-weight: 500;
+  }
+}
+
+@layer components {
+  /**
+   * Ouverture du bandeau d'accueil.
+   *
+   * L'animation est écrite en CSS et non en JavaScript : elle démarre dès
+   * la première peinture, sans attendre l'hydratation. Le titre — le plus
+   * grand élément de la page, donc celui qui sert de repère de vitesse —
+   * s'affiche ainsi près d'une seconde plus tôt.
+   *
+   * La règle globale « prefers-reduced-motion » neutralise ces animations
+   * pour les personnes qui les ont désactivées.
+   */
+  @keyframes hero-rise {
+    from {
+      opacity: 0;
+      transform: translateY(18px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .hero-rise {
+    animation: hero-rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .hero-delay-1 { animation-delay: 0.05s; }
+  .hero-delay-2 { animation-delay: 0.12s; }
+  .hero-delay-3 { animation-delay: 0.28s; }
+  .hero-delay-4 { animation-delay: 0.42s; }
+
+  @keyframes hero-fade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  .hero-fade {
+    animation: hero-fade 0.8s ease 0.9s both;
+  }
+
+  @keyframes hero-pulse {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(9px); }
+  }
+
+  .hero-pulse {
+    animation: hero-pulse 2.4s ease-in-out infinite;
   }
 }

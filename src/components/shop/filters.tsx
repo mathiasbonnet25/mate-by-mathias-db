@@ -363,6 +363,7 @@ function CheckboxRow({
 export function FilterSidebar({ facets }: { facets: Facets }) {
   return (
     <aside className="hidden lg:block" aria-label="Filtres">
+      <h2 className="sr-only">Filtrer les produits</h2>
       <FilterPanel facets={facets} />
     </aside>
   );

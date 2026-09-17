@@ -11,13 +11,20 @@ const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
   display: "swap",
+  adjustFontFallback: true,
 });
 
+// Seules les graisses réellement utilisées sont chargées : les titres sont
+// en 300, le reste du texte en 400. Charger 500 et 600 « au cas où »
+// coûtait une trentaine de kilo-octets sur le chemin critique.
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600"],
+  weight: ["300", "400"],
   variable: "--font-cormorant",
   display: "swap",
+  // Ajuste les métriques de la police de repli pour que la substitution
+  // ne provoque aucun décalage de mise en page.
+  adjustFontFallback: true,
 });
 
 export const metadata: Metadata = {

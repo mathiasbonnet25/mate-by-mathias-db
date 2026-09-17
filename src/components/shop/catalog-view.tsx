@@ -79,6 +79,8 @@ export async function CatalogView({
         <FilterSidebar facets={facets} />
 
         <div>
+          <h2 className="sr-only">Produits</h2>
+
           {result.products.length === 0 ? (
             <div className="border border-line py-28 text-center">
               <p className="font-display text-2xl">Aucun produit ne correspond</p>
@@ -95,12 +97,8 @@ export async function CatalogView({
             </div>
           ) : (
             <RevealGroup className="grid grid-cols-2 gap-x-5 gap-y-14 lg:grid-cols-3">
-              {result.products.map((product, index) => (
-                <ProductCard
-                  key={product.id}
-                  product={product}
-                  priority={index < 3}
-                />
+              {result.products.map((product) => (
+                <ProductCard key={product.id} product={product} />
               ))}
             </RevealGroup>
           )}
