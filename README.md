@@ -17,8 +17,9 @@ vélos, avec une boutique d'équipement.
 7. [Sécurité](#sécurité)
 8. [Conformité française et RGPD](#conformité-française-et-rgpd)
 9. [Déploiement](#déploiement)
-10. [À faire avant la mise en ligne](#à-faire-avant-la-mise-en-ligne)
-11. [Ce qui reste à construire](#ce-qui-reste-à-construire)
+10. [Déploiement sur Netlify](#déploiement-sur-netlify)
+11. [À faire avant la mise en ligne](#à-faire-avant-la-mise-en-ligne)
+12. [Ce qui reste à construire](#ce-qui-reste-à-construire)
 
 ---
 
@@ -94,7 +95,7 @@ vélos, avec une boutique d'équipement.
 | Paiement | Stripe (webhook signé) |
 | Emails | Resend |
 | Médias | Cloudflare R2 ou Supabase Storage (compatible S3) |
-| Hébergement | Vercel |
+| Hébergement | Vercel ou Netlify |
 
 ---
 
@@ -265,6 +266,81 @@ avant chaque évolution importante.
    téléversés disparaîtront au prochain déploiement.
 
 ---
+
+## Déploiement sur Netlify
+
+Le site fonctionne sur Netlify, qui fournit un environnement d'exécution
+Next.js couvrant le routeur App, les actions serveur, le middleware et les
+routes d'API. Le fichier [`netlify.toml`](netlify.toml) contient la
+configuration.
+
+### Étapes
+
+1. **Créer le site.** Sur Netlify : *Add new site → Import an existing
+   project*, choisir GitHub, puis le dépôt et la branche à déployer.
+   La commande de build et le dossier publié sont lus dans `netlify.toml`,
+   il n'y a rien à saisir.
+
+2. **Renseigner les variables d'environnement** dans *Site configuration →
+   Environment variables*. Reprendre [`.env.example`](.env.example).
+   `NEXT_PUBLIC_SITE_URL` doit contenir l'adresse définitive du site.
+
+3. **Appliquer les migrations**, une seule fois, depuis votre machine et
+   non pendant le build — deux déploiements simultanés joueraient la
+   migration en parallèle :
+
+   ```bash
+   DATABASE_URL="<url de production>" npx prisma migrate deploy
+   DATABASE_URL="<url de production>" npm run db:seed
+   ```
+
+4. **Déclarer le webhook Stripe** sur
+   `https://votre-domaine/api/webhooks/stripe`, puis reporter la clé de
+   signature dans `STRIPE_WEBHOOK_SECRET`.
+
+### Trois points à régler avant la mise en ligne
+
+**Le stockage des médias doit passer par S3.** Sans configuration, le code
+écrit les fichiers dans le dossier public de l'application. C'est commode
+en développement, mais le disque des fonctions Netlify est en lecture
+seule : tout téléversement échouerait — photos de produits comme pièces
+jointes des réclamations. Renseignez `S3_ENDPOINT`, `S3_BUCKET`,
+`S3_ACCESS_KEY_ID`, `S3_SECRET_ACCESS_KEY` et `NEXT_PUBLIC_MEDIA_BASE_URL`
+(Cloudflare R2, Supabase Storage ou équivalent).
+
+**La base doit être jointe par une connexion mutualisée.** Chaque fonction
+ouvre sa propre connexion PostgreSQL ; sans mutualisation, un pic de trafic
+épuise le pool et le site renvoie des erreurs. Utilisez l'URL de *pooling*
+fournie par votre hébergeur de base — Neon, Supabase ou PgBouncer :
+
+```
+DATABASE_URL="postgresql://…@…-pooler…/base?pgbouncer=true&connection_limit=1"
+DIRECT_URL="postgresql://…@…/base"   # sans pooler, pour les migrations
+```
+
+**L'hébergeur annoncé dans les mentions légales doit être corrigé.** Le
+contenu par défaut nomme Vercel. La loi pour la confiance dans l'économie
+numérique impose d'indiquer l'hébergeur réel. Dans *Administration →
+Contenu → Mentions légales — hébergeur*, remplacez par :
+
+- Dénomination : Netlify, Inc.
+- Adresse : 512 2nd Street, Suite 200, San Francisco, CA 94107, États-Unis
+- Contact : https://www.netlify.com
+
+Vérifiez ces informations sur le site de Netlify avant publication : une
+adresse de siège change.
+
+### Point d'attention sur les données personnelles
+
+Netlify est une société américaine et ses fonctions s'exécutent par défaut
+hors d'Europe. Si vous retenez cet hébergeur, la
+[politique de confidentialité](src/app/(site)/confidentialite/page.tsx)
+doit le refléter : mention du transfert hors Union européenne et de son
+encadrement par les clauses contractuelles types. Héberger la base de
+données dans l'Union ne suffit pas si les fonctions qui la lisent
+s'exécutent ailleurs. À faire trancher avec le juriste qui relira les
+textes.
+
 
 ## À faire avant la mise en ligne
 

@@ -1,0 +1,48 @@
+# Déploiement sur Netlify
+#
+# Le site tourne aussi bien sur Netlify que sur Vercel : Netlify fournit un
+# environnement d'exécution Next.js qui prend en charge le routeur App, les
+# actions serveur, le middleware et les routes d'API.
+#
+# Trois points demandent malgré tout une configuration explicite, détaillés
+# dans le README à la section « Déploiement sur Netlify » :
+#
+#   1. le stockage des médias doit passer par S3 (Cloudflare R2, Supabase
+#      Storage…) — le disque des fonctions est en lecture seule ;
+#   2. la base PostgreSQL doit être jointe par une connexion mutualisée,
+#      sans quoi les fonctions épuisent le pool de connexions ;
+#   3. l'hébergeur annoncé dans les mentions légales doit être corrigé.
+
+[build]
+  # `npm run build` lance « prisma generate » avant « next build » : le
+  # client Prisma doit être régénéré à chaque déploiement, il n'est pas
+  # versionné.
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  # Le projet exige Node 20.9 ou plus récent.
+  NODE_VERSION = "20"
+
+  # Netlify inspecte le résultat du build et échoue s'il y retrouve la
+  # valeur d'une variable d'environnement. Les variables préfixées
+  # NEXT_PUBLIC_ sont destinées au navigateur : leur présence dans le
+  # paquet est normale et voulue.
+  #
+  # Cette liste ne doit contenir QUE des variables publiques. N'y ajoutez
+  # jamais une clé secrète pour faire passer un build : ce serait
+  # désactiver l'alerte au lieu de traiter la fuite.
+  SECRETS_SCAN_OMIT_KEYS = "NEXT_PUBLIC_SITE_URL,NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,NEXT_PUBLIC_PAYPAL_CLIENT_ID,NEXT_PUBLIC_MEDIA_BASE_URL"
+
+  # Les migrations Prisma ne sont pas jouées pendant le build : une
+  # migration lancée par plusieurs déploiements simultanés corromprait la
+  # base. Elle se lance à la main, une fois, avant la mise en ligne :
+  #   npx prisma migrate deploy
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+# Les en-têtes de sécurité (CSP, HSTS, X-Frame-Options…) sont définis dans
+# next.config.mjs et appliqués par Next lui-même : ne pas les redéclarer
+# ici, deux jeux d'en-têtes concurrents produiraient un comportement
+# imprévisible selon la route.
