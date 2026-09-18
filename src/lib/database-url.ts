@@ -20,23 +20,32 @@
  * doivent rester en accord.
  */
 
-/** Renvoie la première variable renseignée, en ignorant les valeurs vides. */
-function premiereRenseignee(...noms: string[]): string | undefined {
+const SCHEMA_ATTENDU = /^postgres(ql)?:\/\//;
+
+/**
+ * Renvoie la première adresse exploitable parmi les noms donnés.
+ *
+ * Une valeur vide est ignorée, et une valeur qui n'a pas l'allure d'une
+ * adresse PostgreSQL aussi : une variable laissée à un exemple, ou une
+ * ligne de commande copiée en entier, ne doit pas masquer l'adresse que
+ * l'hébergeur a correctement renseignée juste à côté.
+ */
+function premiereExploitable(...noms: string[]): string | undefined {
   for (const nom of noms) {
     const valeur = process.env[nom]?.trim();
-    if (valeur) return valeur;
+    if (valeur && SCHEMA_ATTENDU.test(valeur)) return valeur;
   }
   return undefined;
 }
 
 /** Connexion de l'application. Mutualisée en production. */
 export function databaseUrl(): string | undefined {
-  return premiereRenseignee("DATABASE_URL", "NETLIFY_DATABASE_URL");
+  return premiereExploitable("DATABASE_URL", "NETLIFY_DATABASE_URL");
 }
 
 /** Connexion directe, réservée aux migrations. */
 export function directDatabaseUrl(): string | undefined {
-  return premiereRenseignee(
+  return premiereExploitable(
     "DIRECT_URL",
     "NETLIFY_DATABASE_URL_UNPOOLED",
     "DATABASE_URL",
