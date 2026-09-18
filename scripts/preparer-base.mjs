@@ -168,6 +168,13 @@ console.log("→ Application des migrations…");
 lancer("npx", ["prisma", "migrate", "deploy"]);
 
 if (process.env.SEED_ON_DEPLOY === "1") {
+  // Le semis passe par le client Prisma, qui n'existe pas tant qu'il n'a
+  // pas été engendré : il n'est pas versionné, et un serveur de
+  // déploiement part d'un dossier propre. « npm run build » s'en charge
+  // aussi, mais plus tard — trop tard pour cette étape-ci.
+  console.log("→ Génération du client Prisma…");
+  lancer("npx", ["prisma", "generate"]);
+
   console.log("→ Données de départ (SEED_ON_DEPLOY=1)…");
   lancer("npx", ["tsx", "prisma/seed.ts"]);
   console.log("→ Pensez à retirer SEED_ON_DEPLOY une fois la base peuplée.");
