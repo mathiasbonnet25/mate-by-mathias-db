@@ -7,6 +7,18 @@ import type { Role } from "@prisma/client";
  * La logique d'authentification réelle vit dans src/lib/auth.ts.
  */
 export const authConfig = {
+  /**
+   * Auth.js refuse par défaut les requêtes dont l'en-tête « Host » ne lui
+   * est pas connu — une protection contre l'empoisonnement d'en-tête. Il
+   * fait une exception pour Vercel, qu'il reconnaît seul ; derrière tout
+   * autre hébergeur il rejette la connexion sans que rien ne s'affiche.
+   *
+   * L'en-tête est ici posé par l'hébergeur lui-même, jamais par le
+   * visiteur : lui faire confiance est la marche à suivre documentée pour
+   * un déploiement hors Vercel. Si le site venait à répondre sur un nom de
+   * domaine non maîtrisé, ce réglage serait à revoir.
+   */
+  trustHost: true,
   pages: {
     signIn: "/connexion",
     error: "/connexion",

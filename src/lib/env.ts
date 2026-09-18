@@ -39,9 +39,20 @@ export function serverEnv(): ServerEnv {
   return cached;
 }
 
-/** URL publique du site, utilisée pour les liens absolus et le SEO. */
+/**
+ * URL publique du site, utilisée pour les liens absolus, le SEO et les
+ * retours de paiement.
+ *
+ * À défaut de réglage explicite, on reprend l'adresse que l'hébergeur
+ * expose pendant la construction — Netlify pose « URL ». Sans ce repli, le
+ * site se décrivait lui-même comme « localhost » : plan du site erroné, et
+ * surtout un retour de paiement Stripe renvoyant le client vers sa propre
+ * machine.
+ */
 export const siteUrl = (
-  process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"
+  process.env.NEXT_PUBLIC_SITE_URL ??
+  process.env.URL ??
+  "http://localhost:3000"
 ).replace(/\/$/, "");
 
 export const isProduction = process.env.NODE_ENV === "production";
