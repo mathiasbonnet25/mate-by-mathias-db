@@ -60,17 +60,26 @@ export function Configurator({
   const [error, setError] = useState<string | null>(null);
 
   const total = useMemo(() => estimate(options, selection), [options, selection]);
-  const step = STEPS[stepIndex]!;
-  const isRecap = stepIndex === STEPS.length;
+  const isRecap = stepIndex >= STEPS.length;
+  /**
+   * Null sur le récapitulatif : ce n'est pas une étape de choix, il vient
+   * après la dernière. L'affirmation « STEPS[stepIndex]! » qui figurait ici
+   * promettait un objet toujours présent ; au récapitulatif il ne l'était
+   * pas, et la lecture de « step.key » juste en dessous faisait tomber la
+   * page entière sur son écran d'erreur.
+   */
+  const step = STEPS[stepIndex] ?? null;
 
   const stepComplete =
-    step.key === "SUPPORT"
-      ? Boolean(selection.support)
-      : step.key === "PAINT"
-        ? Boolean(selection.paint)
-        : step.key === "FINISH"
-          ? Boolean(selection.finish)
-          : true;
+    !step
+      ? true
+      : step.key === "SUPPORT"
+        ? Boolean(selection.support)
+        : step.key === "PAINT"
+          ? Boolean(selection.paint)
+          : step.key === "FINISH"
+            ? Boolean(selection.finish)
+            : true;
 
   function choose(stepKey: StepKey, slug: string) {
     setSelection((prev) => {
@@ -198,7 +207,7 @@ export function Configurator({
         </ol>
 
         <AnimatePresence mode="wait">
-          {!isRecap ? (
+          {step ? (
             <motion.div
               key={step.key}
               initial={{ opacity: 0, x: sens * 56 }}

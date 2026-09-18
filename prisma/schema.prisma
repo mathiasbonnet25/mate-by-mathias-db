@@ -9,7 +9,15 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  // Connexion utilisée par l'application. En production c'est l'URL
+  // mutualisée (« pooler ») : les fonctions serverless ouvrent beaucoup de
+  // connexions courtes, que le mutualiseur regroupe.
+  url       = env("DATABASE_URL")
+  // Connexion directe, réservée aux migrations. Le mutualiseur ne gère pas
+  // les verrous consultatifs dont le moteur de migration a besoin. Absente,
+  // les migrations retombent sur DATABASE_URL ; « prisma generate » et
+  // l'application n'en ont jamais besoin.
+  directUrl = env("DIRECT_URL")
 }
 
 // ---------------------------------------------------------------------------

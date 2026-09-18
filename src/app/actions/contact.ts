@@ -56,18 +56,21 @@ export async function submitContactAction(
     };
   }
 
-  const ip = await getClientIp();
-  const limit = await rateLimit(`contact:${hashIp(ip) ?? "unknown"}`, 5, 3600);
-  if (!limit.success) {
-    return {
-      ok: false,
-      error: "Trop de messages envoyés. Merci de réessayer dans une heure.",
-    };
-  }
-
   const data = parsed.data;
 
   try {
+    // Le comptage des envois interroge la base : il appartient au bloc
+    // protégé, sinon une base momentanément injoignable fait échouer
+    // l'action entière au lieu d'afficher un message au visiteur.
+    const ip = await getClientIp();
+    const limit = await rateLimit(`contact:${hashIp(ip) ?? "unknown"}`, 5, 3600);
+    if (!limit.success) {
+      return {
+        ok: false,
+        error: "Trop de messages envoyés. Merci de réessayer dans une heure.",
+      };
+    }
+
     await prisma.contactMessage.create({
       data: {
         name: data.name,

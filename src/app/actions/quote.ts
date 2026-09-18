@@ -52,19 +52,6 @@ export async function submitQuoteAction(
     };
   }
 
-  const ip = await getClientIp();
-  const limit = await rateLimit(
-    `quote:${hashIp(ip) ?? "unknown"}`,
-    5,
-    60 * 60,
-  );
-  if (!limit.success) {
-    return {
-      ok: false,
-      error: "Trop de demandes envoyées. Merci de réessayer dans une heure.",
-    };
-  }
-
   const data = parsed.data;
 
   if (!data.selection.support) {
@@ -72,6 +59,23 @@ export async function submitQuoteAction(
   }
 
   try {
+    // Le comptage des envois interroge la base : il appartient au bloc
+    // protégé. Placé avant, une base momentanément injoignable — le réveil
+    // d'une instance mise en veille, une coupure réseau — faisait échouer
+    // l'action entière au lieu d'afficher un message au visiteur.
+    const ip = await getClientIp();
+    const limit = await rateLimit(
+      `quote:${hashIp(ip) ?? "unknown"}`,
+      5,
+      60 * 60,
+    );
+    if (!limit.success) {
+      return {
+        ok: false,
+        error: "Trop de demandes envoyées. Merci de réessayer dans une heure.",
+      };
+    }
+
     const options = await getCustomizationOptions();
     const estimateCents = estimate(options, data.selection);
 

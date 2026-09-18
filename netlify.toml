@@ -14,10 +14,16 @@
 #   3. l'hébergeur annoncé dans les mentions légales doit être corrigé.
 
 [build]
-  # `npm run build` lance « prisma generate » avant « next build » : le
-  # client Prisma doit être régénéré à chaque déploiement, il n'est pas
-  # versionné.
-  command = "npm run build"
+  # « build:deploiement » applique d'abord les migrations, puis lance
+  # « npm run build » (qui régénère le client Prisma — il n'est pas
+  # versionné — avant de construire le site).
+  #
+  # Les migrations tournent ici parce que c'est le seul endroit qui joigne
+  # à la fois le dépôt et la base. Prisma pose un verrou avant d'appliquer
+  # une migration : deux déploiements simultanés attendent leur tour au
+  # lieu de se marcher dessus. Surveillez malgré tout le journal du
+  # premier déploiement, une migration interrompue se reprend à la main.
+  command = "npm run build:deploiement"
   publish = ".next"
 
 [build.environment]
@@ -34,10 +40,11 @@
   # désactiver l'alerte au lieu de traiter la fuite.
   SECRETS_SCAN_OMIT_KEYS = "NEXT_PUBLIC_SITE_URL,NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,NEXT_PUBLIC_PAYPAL_CLIENT_ID,NEXT_PUBLIC_MEDIA_BASE_URL"
 
-  # Les migrations Prisma ne sont pas jouées pendant le build : une
-  # migration lancée par plusieurs déploiements simultanés corromprait la
-  # base. Elle se lance à la main, une fois, avant la mise en ligne :
-  #   npx prisma migrate deploy
+  # Pour peupler la base la première fois — catégories, barème de
+  # l'atelier, textes, produits de démonstration — ajoutez la variable
+  # SEED_ON_DEPLOY = 1 puis relancez un déploiement. Retirez-la ensuite :
+  # sans quoi un produit supprimé depuis l'administration reviendrait à
+  # chaque mise en ligne.
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"

@@ -286,13 +286,27 @@ configuration.
    Environment variables*. Reprendre [`.env.example`](.env.example).
    `NEXT_PUBLIC_SITE_URL` doit contenir l'adresse définitive du site.
 
-3. **Appliquer les migrations**, une seule fois, depuis votre machine et
-   non pendant le build — deux déploiements simultanés joueraient la
-   migration en parallèle :
+3. **Créer les tables.** Elles sont créées par le déploiement lui-même :
+   `netlify.toml` lance `npm run build:deploiement`, qui applique les
+   migrations avant de construire le site. Il n'y a donc rien à faire,
+   sinon vérifier le journal du premier déploiement.
+
+   Pour peupler la base la première fois — catégories, barème de
+   l'atelier, textes, produits de démonstration — ajoutez la variable
+   `SEED_ON_DEPLOY` à `1`, relancez un déploiement, puis **retirez-la**.
+   Laissée en place, elle ferait réapparaître à chaque mise en ligne un
+   produit de démonstration supprimé depuis l'administration.
+
+   Pour créer le compte administrateur au passage, ajoutez aussi
+   `SEED_ADMIN_EMAIL` et `SEED_ADMIN_PASSWORD` (au moins douze
+   caractères), et retirez-les une fois le compte créé.
+
+   Les mêmes opérations restent possibles depuis un poste qui atteint la
+   base :
 
    ```bash
-   DATABASE_URL="<url de production>" npx prisma migrate deploy
-   DATABASE_URL="<url de production>" npm run db:seed
+   npx prisma migrate deploy
+   npm run db:seed
    ```
 
 4. **Déclarer le webhook Stripe** sur
@@ -369,23 +383,22 @@ remettez qu'en sachant qu'il supprime des données.
 ### Créer le schéma
 
 La base est vide tant que les migrations Prisma n'ont pas été jouées.
-Depuis un poste authentifié auprès de Neon :
+C'est le déploiement qui s'en charge : voir l'étape 3 de la section
+Netlify ci-dessus.
+
+L'URL de connexion se récupère ainsi :
 
 ```bash
 neon connection-string production --project-id odd-resonance-08969276
 ```
 
-Reportez l'URL dans `DIRECT_URL`, l'URL `-pooler` dans `DATABASE_URL`, puis :
+L'URL comportant `-pooler` va dans `DATABASE_URL`, celle sans dans
+`DIRECT_URL`. La seconde ne sert qu'aux migrations : le mutualiseur ne
+gère pas les verrous dont le moteur de migration a besoin.
 
-```bash
-npx prisma migrate deploy   # crée les tables et renseigne _prisma_migrations
-npm run seed                # contenu de départ et compte administrateur
-npx prisma migrate status   # doit répondre « up to date »
-```
-
-N'appliquez pas ces migrations à la main, instruction SQL par instruction :
-Prisma tient son propre journal dans `_prisma_migrations`, et un journal
-incomplet fait échouer les migrations suivantes.
+N'appliquez jamais ces migrations à la main, instruction SQL par
+instruction : Prisma tient son journal dans `_prisma_migrations`, et un
+journal incomplet fait échouer les migrations suivantes.
 
 ### Ce que Neon ne règle pas
 

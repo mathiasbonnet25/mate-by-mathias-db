@@ -103,15 +103,6 @@ export async function signUpAction(input: unknown): Promise<AuthActionResult> {
     };
   }
 
-  const ip = await getClientIp();
-  const limit = await rateLimit(`signup:${hashIp(ip) ?? "unknown"}`, 5, 3600);
-  if (!limit.success) {
-    return {
-      ok: false,
-      error: "Trop de créations de compte. Merci de réessayer plus tard.",
-    };
-  }
-
   const data = parsed.data;
   const strength = assessPassword(data.password);
   if (!strength.ok) {
@@ -121,6 +112,18 @@ export async function signUpAction(input: unknown): Promise<AuthActionResult> {
   const email = data.email.toLowerCase();
 
   try {
+    // Le comptage des envois interroge la base : il appartient au bloc
+    // protégé, sinon une base momentanément injoignable fait échouer
+    // l'action entière au lieu d'afficher un message au visiteur.
+    const ip = await getClientIp();
+    const limit = await rateLimit(`signup:${hashIp(ip) ?? "unknown"}`, 5, 3600);
+    if (!limit.success) {
+      return {
+        ok: false,
+        error: "Trop de créations de compte. Merci de réessayer plus tard.",
+      };
+    }
+
     const existing = await prisma.user.findUnique({ where: { email } });
 
     // On ne révèle jamais qu'une adresse est déjà enregistrée : le message

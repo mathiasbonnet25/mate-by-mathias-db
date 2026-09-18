@@ -68,18 +68,25 @@ export async function submitClaimAction(input: unknown): Promise<ClaimResult> {
     };
   }
 
-  const ip = await getClientIp();
-  const limite = await rateLimit(`reclamation:${hashIp(ip) ?? "inconnue"}`, 5, 3600);
-  if (!limite.success) {
-    return {
-      ok: false,
-      error: "Trop de demandes envoyées. Merci de réessayer dans une heure.",
-    };
-  }
-
   const data = parsed.data;
 
   try {
+    // Le comptage des envois interroge la base : il appartient au bloc
+    // protégé, sinon une base momentanément injoignable fait échouer
+    // l'action entière au lieu d'afficher un message au visiteur.
+    const ip = await getClientIp();
+    const limite = await rateLimit(
+      `reclamation:${hashIp(ip) ?? "inconnue"}`,
+      5,
+      3600,
+    );
+    if (!limite.success) {
+      return {
+        ok: false,
+        error: "Trop de demandes envoyées. Merci de réessayer dans une heure.",
+      };
+    }
+
     const session = await auth();
 
     // Le rattachement à une commande n'est fait que si le numéro
