@@ -18,8 +18,9 @@ vélos, avec une boutique d'équipement.
 8. [Conformité française et RGPD](#conformité-française-et-rgpd)
 9. [Déploiement](#déploiement)
 10. [Déploiement sur Netlify](#déploiement-sur-netlify)
-11. [À faire avant la mise en ligne](#à-faire-avant-la-mise-en-ligne)
-12. [Ce qui reste à construire](#ce-qui-reste-à-construire)
+11. [Base de données Neon](#base-de-données-neon)
+12. [À faire avant la mise en ligne](#à-faire-avant-la-mise-en-ligne)
+13. [Ce qui reste à construire](#ce-qui-reste-à-construire)
 
 ---
 
@@ -340,6 +341,74 @@ encadrement par les clauses contractuelles types. Héberger la base de
 données dans l'Union ne suffit pas si les fonctions qui la lisent
 s'exécutent ailleurs. À faire trancher avec le juriste qui relira les
 textes.
+
+
+## Base de données Neon
+
+Le projet Neon `mate` (`odd-resonance-08969276`) sert de base PostgreSQL.
+Il appartient à l'organisation `org-silent-wildflower-93612629`, tourne sur
+PostgreSQL 18 et n'a qu'une branche, `production`, qui est la branche par
+défaut.
+
+### Outillage local
+
+Trois fichiers versionnés viennent de la CLI Neon :
+
+| Fichier | Rôle |
+|---|---|
+| `neon.ts` | politique appliquée à la branche par `neon deploy` |
+| `skills-lock.json` | empreintes des fiches d'agent installées |
+| `.claude/skills/neon*` | fiches de référence Neon pour les agents |
+
+`neon.ts` contient une politique vide : la branche garde les réglages du
+projet. Le fichier généré par `neon config init` proposait `ttl: "7d"` sur
+les branches autres que la principale — elles s'effacent alors d'elles-mêmes
+au bout de sept jours. Ce réglage a été retiré volontairement ; ne le
+remettez qu'en sachant qu'il supprime des données.
+
+### Créer le schéma
+
+La base est vide tant que les migrations Prisma n'ont pas été jouées.
+Depuis un poste authentifié auprès de Neon :
+
+```bash
+neon connection-string production --project-id odd-resonance-08969276
+```
+
+Reportez l'URL dans `DIRECT_URL`, l'URL `-pooler` dans `DATABASE_URL`, puis :
+
+```bash
+npx prisma migrate deploy   # crée les tables et renseigne _prisma_migrations
+npm run seed                # contenu de départ et compte administrateur
+npx prisma migrate status   # doit répondre « up to date »
+```
+
+N'appliquez pas ces migrations à la main, instruction SQL par instruction :
+Prisma tient son propre journal dans `_prisma_migrations`, et un journal
+incomplet fait échouer les migrations suivantes.
+
+### Ce que Neon ne règle pas
+
+**Le stockage des médias.** Le stockage objet de Neon n'est pas proposé
+dans la région du projet — l'API répond `platform branchable-storage is not
+available in this region`. Les variables `S3_*` doivent donc pointer vers
+un autre fournisseur, comme indiqué plus haut.
+
+**L'hébergement du site.** Neon fournit la base, pas l'exécution de
+l'application Next.js. Le site a toujours besoin de Netlify, de Vercel ou
+d'un serveur équivalent, et c'est cet hébergeur-là qui doit être nommé dans
+les mentions légales.
+
+### Localisation des données
+
+Le projet est déployé dans la région `aws-eu-west-2`, c'est-à-dire Londres.
+Le Royaume-Uni est hors Union européenne ; les transferts y restent permis
+au titre de la décision d'adéquation de la Commission européenne, mais
+c'est un transfert hors UE, à mentionner dans la politique de
+confidentialité et dans le registre des traitements. Si vous préférez
+éviter la question, recréez le projet dans une région de l'Union, par
+exemple Francfort — la région d'un projet Neon ne se change pas après coup.
+À valider avec le juriste qui relira les textes.
 
 
 ## À faire avant la mise en ligne
