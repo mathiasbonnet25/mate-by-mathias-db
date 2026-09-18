@@ -18,15 +18,23 @@ import { spawnSync } from "node:child_process";
  */
 const SOURCES = {
   DATABASE_URL: ["DATABASE_URL", "NETLIFY_DATABASE_URL"],
-  DIRECT_URL: [
-    "DIRECT_URL",
-    "NETLIFY_DATABASE_URL_UNPOOLED",
-    "DATABASE_URL",
-    "NETLIFY_DATABASE_URL",
-  ],
+  // Faute d'adresse directe, on reprend celle de l'application : c'est le
+  // repli de Prisma lui-même, et il fonctionne.
+  DIRECT_URL: ["DIRECT_URL", "NETLIFY_DATABASE_URL_UNPOOLED"],
 };
 
 const SCHEMA_ATTENDU = /^postgres(ql)?:\/\//;
+
+/**
+ * Une adresse locale ne désigne rien sur un serveur de déploiement : la
+ * machine qui construit le site n'héberge pas la base. Ces adresses ne
+ * sont pas refusées pour autant — en développement c'est la bonne — mais
+ * elles passent en dernier, derrière toute adresse distante.
+ */
+const HOTE_LOCAL = /@(localhost|127\.0\.0\.1|\[::1\])[:/]/;
+
+/** Vrai lorsque le script tourne dans la construction d'un hébergeur. */
+const CHEZ_UN_HEBERGEUR = Boolean(process.env.NETLIFY || process.env.VERCEL);
 
 /** Aperçu d'une valeur, mot de passe retiré : ces lignes finissent dans un journal. */
 function apercu(valeur) {
@@ -42,6 +50,9 @@ function apercu(valeur) {
  */
 function resoudre(noms) {
   const refus = [];
+  /** Adresse locale retenue faute de mieux, examinée une fois le tour fini. */
+  let repli;
+
   for (const nom of noms) {
     const brut = process.env[nom];
     if (brut === undefined) continue;
@@ -54,20 +65,40 @@ function resoudre(noms) {
       refus.push(`${nom} commence par « ${apercu(valeur)} »`);
       continue;
     }
+    if (HOTE_LOCAL.test(valeur)) {
+      repli ??= { valeur, nom };
+      continue;
+    }
     return { valeur, nom, refus };
   }
-  return { valeur: undefined, nom: undefined, refus };
+
+  if (repli) {
+    refus.push(`${repli.nom} désigne une machine locale (${apercu(repli.valeur)})`);
+    if (!CHEZ_UN_HEBERGEUR) return { ...repli, refus, local: true };
+  }
+  return { valeur: undefined, nom: undefined, refus, local: Boolean(repli) };
 }
 
-function expliquerRefus(refus) {
+function expliquerRefus(refus, local) {
   if (refus.length === 0) return [];
   return [
     "Ce qui a été trouvé :",
     ...refus.map((r) => `  · ${r}`),
     "",
-    "Une adresse valable commence par postgresql:// — sans guillemets,",
-    "sans « psql » devant, et sans le nom de la variable répété dans la",
-    "valeur.",
+    ...(local
+      ? [
+          "Une adresse en « localhost » désigne la machine qui construit le",
+          "site, et celle-ci n'héberge aucune base : c'est la valeur",
+          "d'exemple du fichier modèle, restée telle quelle.",
+          "",
+          "Remplacez-la par l'adresse réelle de votre base, ou laissez",
+          "Netlify la fournir (Project configuration → Database).",
+        ]
+      : [
+          "Une adresse valable commence par postgresql:// — sans guillemets,",
+          "sans « psql » devant, et sans le nom de la variable répété dans",
+          "la valeur.",
+        ]),
   ];
 }
 
@@ -80,7 +111,7 @@ if (!app.valeur) {
       "",
       "Aucune adresse de base de données utilisable.",
       "",
-      ...expliquerRefus(app.refus),
+      ...expliquerRefus(app.refus, app.local),
       ...(app.refus.length === 0
         ? [
             "Aucune des variables DATABASE_URL ou NETLIFY_DATABASE_URL",
@@ -113,9 +144,16 @@ if (direct.valeur) {
   process.env.DIRECT_URL = direct.valeur;
   console.log(`→ Adresse des migrations : ${direct.nom}`);
 } else {
-  delete process.env.DIRECT_URL;
-  console.log("→ Adresse des migrations : aucune, on reprend la précédente.");
+  // On recopie l'adresse de l'application plutôt que de retirer la
+  // variable : le schéma la réclame par « env("DIRECT_URL") », et Prisma
+  // refuse de démarrer si elle manque — P1012. Le repli silencieux qu'on
+  // croyait obtenir en la supprimant n'existait que grâce au fichier .env
+  // d'un poste de développement ; un serveur de déploiement n'en a pas.
+  process.env.DIRECT_URL = app.valeur;
   for (const r of direct.refus) console.log(`  · écartée : ${r}`);
+  console.log(
+    `→ Adresse des migrations : aucune de propre, on reprend ${app.nom}.`,
+  );
 }
 
 function lancer(commande, arguments_) {

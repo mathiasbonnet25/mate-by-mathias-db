@@ -45,11 +45,9 @@ export function databaseUrl(): string | undefined {
 
 /** Connexion directe, réservée aux migrations. */
 export function directDatabaseUrl(): string | undefined {
-  return premiereExploitable(
-    "DIRECT_URL",
-    "NETLIFY_DATABASE_URL_UNPOOLED",
-    "DATABASE_URL",
-    "NETLIFY_DATABASE_URL",
+  return (
+    premiereExploitable("DIRECT_URL", "NETLIFY_DATABASE_URL_UNPOOLED") ??
+    databaseUrl()
   );
 }
 
