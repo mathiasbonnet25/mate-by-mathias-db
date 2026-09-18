@@ -17,6 +17,29 @@
  */
 import { spawnSync } from "node:child_process";
 
+/**
+ * Les commandes Prisma lancées en ligne de commande ne lisent que le
+ * schéma, donc DATABASE_URL et DIRECT_URL. Quand la base a été créée
+ * depuis l'interface de l'hébergeur, celui-ci renseigne des variables à
+ * lui : on les recopie ici sous les noms attendus.
+ *
+ * Cette liste doit rester en accord avec src/lib/database-url.ts, qui fait
+ * la même résolution pour l'application elle-même.
+ */
+const CORRESPONDANCES = [
+  ["DATABASE_URL", ["NETLIFY_DATABASE_URL"]],
+  ["DIRECT_URL", ["NETLIFY_DATABASE_URL_UNPOOLED", "NETLIFY_DATABASE_URL"]],
+];
+
+for (const [attendue, secours] of CORRESPONDANCES) {
+  if (process.env[attendue]?.trim()) continue;
+  const trouvee = secours.find((nom) => process.env[nom]?.trim());
+  if (trouvee) {
+    process.env[attendue] = process.env[trouvee];
+    console.log(`→ ${attendue} reprise de ${trouvee}.`);
+  }
+}
+
 function lancer(commande, arguments_) {
   const resultat = spawnSync(commande, arguments_, {
     stdio: "inherit",
@@ -27,17 +50,41 @@ function lancer(commande, arguments_) {
   }
 }
 
-if (!process.env.DATABASE_URL) {
+if (!process.env.DATABASE_URL?.trim()) {
   console.error(
     [
       "",
-      "DATABASE_URL n'est pas définie.",
+      "Aucune base de données n'est configurée.",
       "",
-      "Le site ne peut pas fonctionner sans base de données : les pages",
-      "catalogue et l'atelier de personnalisation renverraient une erreur.",
+      "Le site ne peut pas fonctionner sans elle : les pages catalogue et",
+      "l'atelier de personnalisation renverraient une erreur.",
       "",
-      "Renseignez la variable dans les réglages de l'hébergeur, rubrique",
-      "variables d'environnement, puis relancez le déploiement.",
+      "Le plus simple, sur Netlify : Project configuration → Database,",
+      "puis créer la base. La variable de connexion est alors renseignée",
+      "toute seule, il n'y a rien à recopier.",
+      "",
+      "Sinon, renseignez DATABASE_URL à la main. La valeur doit commencer",
+      "par postgresql:// — sans guillemets, sans « psql » devant, et sans",
+      "le nom de la variable répété dans la valeur.",
+      "",
+    ].join("\n"),
+  );
+  process.exit(1);
+}
+
+if (!/^postgres(ql)?:\/\//.test(process.env.DATABASE_URL.trim())) {
+  const debut = process.env.DATABASE_URL.trim().slice(0, 24);
+  console.error(
+    [
+      "",
+      "L'adresse de la base ne ressemble pas à une adresse PostgreSQL.",
+      "",
+      `Elle commence par : ${debut}…`,
+      "Elle devrait commencer par : postgresql://",
+      "",
+      "Les confusions les plus fréquentes : avoir copié la ligne de",
+      "commande entière (« psql '...' »), avoir gardé « DATABASE_URL= »",
+      "au début de la valeur, ou avoir laissé les guillemets.",
       "",
     ].join("\n"),
   );

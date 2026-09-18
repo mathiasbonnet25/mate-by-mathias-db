@@ -282,11 +282,23 @@ configuration.
    La commande de build et le dossier publié sont lus dans `netlify.toml`,
    il n'y a rien à saisir.
 
-2. **Renseigner les variables d'environnement** dans *Site configuration →
-   Environment variables*. Reprendre [`.env.example`](.env.example).
-   `NEXT_PUBLIC_SITE_URL` doit contenir l'adresse définitive du site.
+2. **Créer la base**, dans *Project configuration → Database*. Netlify la
+   provisionne et renseigne lui-même les variables de connexion
+   (`NETLIFY_DATABASE_URL` et `NETLIFY_DATABASE_URL_UNPOOLED`), que le site
+   sait lire : il n'y a aucune adresse à recopier, donc aucune occasion de
+   se tromper en la recopiant.
 
-3. **Créer les tables.** Elles sont créées par le déploiement lui-même :
+   Cette base tourne sur l'infrastructure de Neon, mais elle se gère
+   entièrement depuis Netlify. Rien n'oblige à passer par là : renseigner
+   `DATABASE_URL` à la main reste possible et l'emporte sur la variable de
+   l'hébergeur.
+
+3. **Renseigner les autres variables d'environnement** dans *Site
+   configuration → Environment variables*. Reprendre
+   [`.env.example`](.env.example). `NEXT_PUBLIC_SITE_URL` doit contenir
+   l'adresse définitive du site.
+
+4. **Créer les tables.** Elles sont créées par le déploiement lui-même :
    `netlify.toml` lance `npm run build:deploiement`, qui applique les
    migrations avant de construire le site. Il n'y a donc rien à faire,
    sinon vérifier le journal du premier déploiement.
@@ -309,7 +321,7 @@ configuration.
    npm run db:seed
    ```
 
-4. **Déclarer le webhook Stripe** sur
+5. **Déclarer le webhook Stripe** sur
    `https://votre-domaine/api/webhooks/stripe`, puis reporter la clé de
    signature dans `STRIPE_WEBHOOK_SECRET`.
 
@@ -359,10 +371,15 @@ textes.
 
 ## Base de données Neon
 
-Le projet Neon `mate` (`odd-resonance-08969276`) sert de base PostgreSQL.
+Cette section ne concerne que l'usage de Neon **en direct**, c'est-à-dire
+sans passer par *Project configuration → Database* de Netlify. Le chemin
+recommandé reste celui décrit plus haut : il évite toute recopie d'adresse.
+
+Le projet Neon `mate` (`odd-resonance-08969276`) a été créé pour cet usage.
 Il appartient à l'organisation `org-silent-wildflower-93612629`, tourne sur
 PostgreSQL 18 et n'a qu'une branche, `production`, qui est la branche par
-défaut.
+défaut. Si vous retenez la base fournie par Netlify, ce projet ne sert plus
+à rien et peut être supprimé.
 
 ### Outillage local
 

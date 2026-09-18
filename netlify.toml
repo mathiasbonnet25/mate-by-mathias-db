@@ -7,10 +7,11 @@
 # Trois points demandent malgré tout une configuration explicite, détaillés
 # dans le README à la section « Déploiement sur Netlify » :
 #
-#   1. le stockage des médias doit passer par S3 (Cloudflare R2, Supabase
-#      Storage…) — le disque des fonctions est en lecture seule ;
-#   2. la base PostgreSQL doit être jointe par une connexion mutualisée,
-#      sans quoi les fonctions épuisent le pool de connexions ;
+#   1. le stockage des médias doit passer par S3 (Cloudflare R2, Scaleway
+#      Object Storage…) — le disque des fonctions est en lecture seule ;
+#   2. la base se crée depuis Project configuration → Database : Netlify
+#      renseigne alors NETLIFY_DATABASE_URL, que le site sait lire, et il
+#      n'y a aucune adresse de connexion à recopier ;
 #   3. l'hébergeur annoncé dans les mentions légales doit être corrigé.
 
 [build]
