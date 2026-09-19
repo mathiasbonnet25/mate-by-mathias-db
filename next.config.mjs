@@ -47,12 +47,35 @@ const securityHeaders = [
 ];
 
 /** @type {import('next').NextConfig} */
+/**
+ * Domaine d'où proviennent les médias, déduit de NEXT_PUBLIC_MEDIA_BASE_URL.
+ *
+ * Next refuse d'optimiser une image venant d'un domaine non déclaré. Les
+ * adresses par défaut des fournisseurs sont listées plus bas, mais un nom de
+ * domaine personnalisé — media.exemple.fr — n'y figure évidemment pas. Le
+ * lire ici évite d'avoir à modifier ce fichier le jour où l'on en pose un.
+ */
+const mediaHost = (() => {
+  const brut = process.env.NEXT_PUBLIC_MEDIA_BASE_URL?.trim();
+  if (!brut) return [];
+  try {
+    const { protocol, hostname } = new URL(brut);
+    if (protocol !== "https:") return [];
+    return [{ protocol: "https", hostname }];
+  } catch {
+    // Adresse mal formée : on ne fait pas échouer la construction du site
+    // pour autant, les domaines listés plus bas restent disponibles.
+    return [];
+  }
+})();
+
 const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
   images: {
     formats: ["image/avif", "image/webp"],
     remotePatterns: [
+      ...mediaHost,
       { protocol: "https", hostname: "**.r2.dev" },
       { protocol: "https", hostname: "**.supabase.co" },
       { protocol: "https", hostname: "images.unsplash.com" },

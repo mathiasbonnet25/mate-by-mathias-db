@@ -74,8 +74,20 @@ async function put(key: string, body: Buffer, contentType: string): Promise<stri
     return base ? `${base.replace(/\/$/, "")}/${key}` : `/${key}`;
   }
 
-  // Repli local : uniquement adapté au développement. Sur un hébergement
-  // sans disque persistant, ces fichiers disparaissent au redéploiement.
+  // Repli local : uniquement adapté au développement. Le disque d'un
+  // hébergeur est en lecture seule, et de toute façon remis à neuf à chaque
+  // mise en ligne. Mieux vaut refuser franchement que laisser croire à un
+  // envoi réussi, ou laisser remonter l'erreur système illisible du système
+  // de fichiers.
+  if (process.env.NETLIFY || process.env.VERCEL) {
+    throw new Error(
+      "Aucun stockage de médias n'est configuré. Renseignez S3_ENDPOINT, " +
+        "S3_BUCKET, S3_ACCESS_KEY_ID, S3_SECRET_ACCESS_KEY et " +
+        "NEXT_PUBLIC_MEDIA_BASE_URL chez l'hébergeur : sans eux, les photos " +
+        "envoyées ne peuvent être conservées nulle part.",
+    );
+  }
+
   const target = path.join(process.cwd(), "public", key);
   await mkdir(path.dirname(target), { recursive: true });
   await writeFile(target, body);
