@@ -68,6 +68,15 @@ async function put(key: string, body: Buffer, contentType: string): Promise<stri
         ContentType: contentType,
         // Les médias sont publics par nature ; ils sont servis via CDN.
         CacheControl: "public, max-age=31536000, immutable",
+        // Tous les fournisseurs compatibles S3 ne traitent pas la lecture
+        // publique de la même façon. Certains la déduisent du réglage du
+        // dépôt ; d'autres attendent la mention sur chaque fichier, et
+        // renvoient sinon une photo inaccessible. D'autres encore rejettent
+        // carrément cette mention. D'où un réglage plutôt qu'un choix
+        // imposé : S3_PUBLIC_ACL=1 l'ajoute, son absence l'omet.
+        ...(process.env.S3_PUBLIC_ACL === "1"
+          ? { ACL: "public-read" as const }
+          : {}),
       }),
     );
     const base = process.env.NEXT_PUBLIC_MEDIA_BASE_URL;
