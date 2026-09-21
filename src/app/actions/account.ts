@@ -31,6 +31,8 @@ export type AccountResult = {
   error?: string;
   qrCodeDataUrl?: string;
   secret?: string;
+  /** Adresse otpauth:// que l'application d'authentification sait ouvrir. */
+  otpauthUrl?: string;
   recoveryCodes?: string[];
 };
 
@@ -55,7 +57,11 @@ export async function startTwoFactorSetup(): Promise<AccountResult> {
       width: 240,
     });
 
-    return { ok: true, qrCodeDataUrl, secret };
+    // L'adresse otpauth est renvoyée en plus du QR code : sur un téléphone,
+    // toucher un lien ouvre l'application d'authentification directement.
+    // Scanner un code affiché sur le même écran est impossible, et l'appareil
+    // photo du téléphone envoie souvent ce genre de lien ailleurs.
+    return { ok: true, qrCodeDataUrl, secret, otpauthUrl: otpauth };
   } catch (error) {
     console.error("[2fa] initialisation impossible", error);
     return {

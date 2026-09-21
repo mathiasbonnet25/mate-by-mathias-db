@@ -21,6 +21,8 @@ export function TwoFactorSetup({ enabled }: { enabled: boolean }) {
   const [pending, startTransition] = useTransition();
   const [qr, setQr] = useState<string | null>(null);
   const [secret, setSecret] = useState<string | null>(null);
+  const [otpauthUrl, setOtpauthUrl] = useState<string | null>(null);
+  const [cleCopiee, setCleCopiee] = useState(false);
   const [token, setToken] = useState("");
   const [recoveryCodes, setRecoveryCodes] = useState<string[] | null>(null);
   const [password, setPassword] = useState("");
@@ -38,6 +40,7 @@ export function TwoFactorSetup({ enabled }: { enabled: boolean }) {
       }
       setQr(result.qrCodeDataUrl ?? null);
       setSecret(result.secret ?? null);
+      setOtpauthUrl(result.otpauthUrl ?? null);
     });
   }
 
@@ -199,26 +202,85 @@ export function TwoFactorSetup({ enabled }: { enabled: boolean }) {
         </>
       ) : (
         <form onSubmit={confirm} className="mt-7">
-          <p className="eyebrow">1. Scannez ce code</p>
-          <div className="mt-4 inline-block rounded-lg border border-line bg-white p-3">
-            <Image
-              src={qr}
-              alt="QR code de configuration de la double authentification"
-              width={200}
-              height={200}
-              unoptimized
-            />
-          </div>
+          <p className="eyebrow">1. Installez une application d&apos;authentification</p>
+          <p className="mt-3 max-w-prose text-[13px] leading-relaxed text-foreground-muted">
+            Google Authenticator, Microsoft Authenticator, Authy ou Aegis —
+            toutes conviennent et sont gratuites. C&apos;est elle qui
+            affichera un code à six chiffres, renouvelé toutes les trente
+            secondes.
+          </p>
+
+          <p className="eyebrow mt-8">2. Ajoutez-y ce compte</p>
+
+          {/* Depuis un téléphone, toucher ce lien ouvre l'application
+              directement. C'est le chemin le plus sûr : l'appareil photo
+              d'un téléphone envoie souvent ce genre de code vers son propre
+              gestionnaire de mots de passe, et l'on ne peut de toute façon
+              pas se photographier son propre écran. */}
+          {otpauthUrl && (
+            <a
+              href={otpauthUrl}
+              className="mt-4 inline-flex h-12 items-center gap-2 rounded-full bg-foreground px-7 text-[11px] uppercase tracking-[0.16em] text-surface transition-colors hover:bg-accent hover:text-accent-contrast sm:hidden"
+            >
+              Ouvrir mon application
+            </a>
+          )}
+
+          <details className="mt-4 max-w-prose">
+            <summary className="cursor-pointer text-[13px] text-foreground-muted hover:text-accent">
+              Depuis un ordinateur : scanner le code
+            </summary>
+            <p className="mt-3 text-[12px] leading-relaxed text-foreground-muted">
+              Ouvrez l&apos;application sur votre téléphone, choisissez
+              « ajouter un compte », puis visez cet écran.{" "}
+              <strong className="text-foreground">
+                Scannez depuis l&apos;application, pas avec l&apos;appareil
+                photo du téléphone
+              </strong>{" "}
+              — celui-ci enverrait le code ailleurs.
+            </p>
+            <div className="mt-4 inline-block rounded-lg border border-line bg-white p-3">
+              <Image
+                src={qr}
+                alt="QR code de configuration de la double authentification"
+                width={200}
+                height={200}
+                unoptimized
+              />
+            </div>
+          </details>
 
           {secret && (
-            <p className="mt-4 text-[12px] text-foreground-muted">
-              Vous ne pouvez pas scanner ? Saisissez cette clé manuellement :{" "}
-              <code className="font-mono text-foreground">{secret}</code>
-            </p>
+            <div className="mt-6 max-w-prose rounded-md border border-line p-4">
+              <p className="text-[12px] text-foreground-muted">
+                Ou saisissez cette clé à la main dans l&apos;application :
+              </p>
+              {/* Groupée par quatre et en grand : trente-deux caractères
+                  recopiés d'un bloc, c'est une erreur assurée. */}
+              <code className="mt-3 block break-all font-mono text-base leading-relaxed tracking-wider text-foreground">
+                {secret.replace(/(.{4})/g, "$1 ").trim()}
+              </code>
+              <button
+                type="button"
+                onClick={() => {
+                  navigator.clipboard.writeText(secret);
+                  setCleCopiee(true);
+                  setTimeout(() => setCleCopiee(false), 2500);
+                }}
+                className="mt-3 inline-flex items-center gap-2 rounded-full border border-line px-5 py-2 text-[11px] uppercase tracking-[0.14em] transition-colors hover:border-accent hover:text-accent"
+              >
+                {cleCopiee ? (
+                  <Check className="h-3.5 w-3.5" aria-hidden />
+                ) : (
+                  <Copy className="h-3.5 w-3.5" aria-hidden />
+                )}
+                {cleCopiee ? "Clé copiée" : "Copier la clé"}
+              </button>
+            </div>
           )}
 
           <label className="mt-8 block max-w-xs">
-            <span className="eyebrow">2. Saisissez le code affiché</span>
+            <span className="eyebrow">3. Saisissez le code affiché</span>
             <input
               inputMode="numeric"
               maxLength={6}
