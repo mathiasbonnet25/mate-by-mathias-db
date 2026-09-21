@@ -252,8 +252,13 @@ export function TwoFactorSetup({ enabled }: { enabled: boolean }) {
 
           {secret && (
             <div className="mt-6 max-w-prose rounded-md border border-line p-4">
-              <p className="text-[12px] text-foreground-muted">
-                Ou saisissez cette clé à la main dans l&apos;application :
+              <p className="text-[13px] leading-relaxed text-foreground">
+                Si le bouton n&apos;a rien ouvert, saisissez cette clé{" "}
+                <strong>dans votre application d&apos;authentification</strong>.
+              </p>
+              <p className="mt-2 text-[12px] leading-relaxed text-foreground-muted">
+                Elle ne se saisit pas sur cette page : le champ de
+                l&apos;étape 3 attend six chiffres, jamais cette clé.
               </p>
               {/* Groupée par quatre et en grand : trente-deux caractères
                   recopiés d'un bloc, c'est une erreur assurée. */}
@@ -280,9 +285,18 @@ export function TwoFactorSetup({ enabled }: { enabled: boolean }) {
           )}
 
           <label className="mt-8 block max-w-xs">
-            <span className="eyebrow">3. Saisissez le code affiché</span>
+            <span className="eyebrow">
+              3. Recopiez les six chiffres de l&apos;application
+            </span>
+            <span className="mt-2 block text-[12px] leading-relaxed text-foreground-muted">
+              Votre application affiche un nombre à six chiffres qui change
+              toutes les trente secondes. C&apos;est lui qu&apos;on attend
+              ici — pas la clé ci-dessus.
+            </span>
             <input
               inputMode="numeric"
+              autoComplete="one-time-code"
+              placeholder="000000"
               maxLength={6}
               value={token}
               onChange={(e) => setToken(e.target.value.replace(/\D/g, ""))}
