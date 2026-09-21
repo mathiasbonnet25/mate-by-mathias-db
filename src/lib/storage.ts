@@ -5,6 +5,7 @@ import sharp from "sharp";
 
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { sha256 } from "@/lib/crypto";
+import { depotMedias } from "@/lib/media-store";
 
 /**
  * Stockage des médias.
@@ -14,9 +15,17 @@ import { sha256 } from "@/lib/crypto";
  * photo, n'est jamais servi tel quel. Les métadonnées EXIF — qui peuvent
  * contenir la position GPS de l'atelier — sont supprimées au passage.
  *
- * Deux destinations possibles : un stockage compatible S3 (Cloudflare R2,
- * Supabase Storage) lorsqu'il est configuré, sinon le dossier public local,
- * utile en développement.
+ * Trois destinations, dans cet ordre :
+ *
+ *  1. un stockage compatible S3 — Scaleway, Cloudflare R2 — dès que les
+ *     variables S3_* sont renseignées ;
+ *  2. à défaut, le dépôt de fichiers fourni par l'hébergeur, qui ne demande
+ *     ni compte supplémentaire ni moyen de paiement ;
+ *  3. à défaut encore, le dossier public local, utile en développement.
+ *
+ * Le choix se fait tout seul : renseigner les variables S3_* suffit à
+ * basculer, sans rien changer aux fiches produit déjà enregistrées — les
+ * anciennes adresses continuent de fonctionner.
  */
 
 const MAX_BYTES = 12 * 1024 * 1024;
@@ -83,6 +92,18 @@ async function put(key: string, body: Buffer, contentType: string): Promise<stri
     return base ? `${base.replace(/\/$/, "")}/${key}` : `/${key}`;
   }
 
+  // Dépôt de l'hébergeur. Les fichiers n'y ont pas d'adresse publique : ils
+  // sont relus et servis par /api/medias, donc depuis le domaine du site.
+  const depot = depotMedias();
+  if (depot) {
+    const copie = body.buffer.slice(
+      body.byteOffset,
+      body.byteOffset + body.byteLength,
+    ) as ArrayBuffer;
+    await depot.set(key, copie, { metadata: { contentType } });
+    return `/api/medias/${key}`;
+  }
+
   // Repli local : uniquement adapté au développement. Le disque d'un
   // hébergeur est en lecture seule, et de toute façon remis à neuf à chaque
   // mise en ligne. Mieux vaut refuser franchement que laisser croire à un
@@ -103,9 +124,9 @@ async function put(key: string, body: Buffer, contentType: string): Promise<stri
   return `/${key}`;
 }
 
-/** Vrai si un stockage externe est configuré. */
+/** Vrai si les fichiers envoyés seront conservés durablement. */
 export function hasRemoteStorage(): boolean {
-  return Boolean(s3Client() && process.env.S3_BUCKET);
+  return Boolean((s3Client() && process.env.S3_BUCKET) || depotMedias());
 }
 
 export async function storeMedia(
